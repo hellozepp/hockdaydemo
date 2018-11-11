@@ -1,8 +1,11 @@
 package com.daojia.hockday.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ArticleDetail {
+public class ArticleDetail implements Serializable {
+
+    private static final long serialVersionUID = -6443558670738567149L;
 
     /** 文章id */
     private Long id;
@@ -27,6 +30,8 @@ public class ArticleDetail {
 
     /** 点赞数 */
     private Integer likeNum;
+
+    private Integer ifLiked;
 
     /** 评论数 */
     private Integer commentNum;
@@ -113,6 +118,14 @@ public class ArticleDetail {
 
     public void setLikeNum(Integer likeNum) {
         this.likeNum = likeNum;
+    }
+
+    public Integer getIfLiked() {
+        return ifLiked;
+    }
+
+    public void setIfLiked(Integer ifLiked) {
+        this.ifLiked = ifLiked;
     }
 
     public Integer getCommentNum() {
