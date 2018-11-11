@@ -1,8 +1,11 @@
 package com.daojia.hockday.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ArticleDetail {
+public class ArticleDetail implements Serializable {
+
+    private static final long serialVersionUID = -6443558670738567149L;
 
     /** 文章id */
     private Long id;

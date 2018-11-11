@@ -157,4 +157,17 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+
+  <!--  查询 文章列表 -->
+  <select id="getArticleList" parameterType="com.daojia.hockday.entity.ArticleSearchDto" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_hackday_article_detail
+    <if test="orderBy != null and orderBy.size() > 0">
+      ORDER BY  #{orderBy}
+    </if>
+  </select>
+
 </mapper>

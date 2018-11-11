@@ -3,6 +3,7 @@ package com.daojia.hockday.entity;
 import java.util.Date;
 
 public class ArticleSearchDto {
+
     private Long id;
 
     private Long authorId;
@@ -26,6 +27,9 @@ public class ArticleSearchDto {
     private Integer page;
 
     private Integer pageSize;
+
+    /* 排序规则 */
+    private String orderBy;
 
     public ArticleSearchDto(Long id, Long authorId, String authorName, String authorPhoto, String title, String articleContent, Integer viewNum, Integer likeNum, Integer commentNum, Date createTime) {
         this.id = id;
@@ -130,5 +134,21 @@ public class ArticleSearchDto {
 
     public void setPage(Integer page) {
         this.page = page;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
     }
 }
