@@ -23,4 +23,12 @@ public interface CommentService {
      * @desc 得到评论
      **/
     public CommentLink getComment(Long commentId);
+
+
+    /**
+     * @desc 保存评论
+     * @param
+     * @return
+     **/
+    public void saveComment(CommentLink commentLink);
 }
