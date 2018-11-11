@@ -10,4 +10,14 @@ public interface ArticleService {
 
 
     default Integer addArticleDetail(ArticleDetail articleDetail) {return 0;}
+
+
+
+
+
+
+
+
+
+
 }

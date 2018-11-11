@@ -2,39 +2,32 @@ package com.daojia.hockday.entity;
 
 import java.util.Date;
 
-public class ArticleDetail {
-
-    /** 文章id */
+public class ArticleSearchDto {
     private Long id;
 
-    /** 发布者ID */
     private Long authorId;
 
-    /** 发布者操作人 */
     private String authorName;
 
-    /**  作者头像*/
     private String authorPhoto;
 
-    /** 文章标题 */
     private String title;
 
-    /** 正文 */
     private String articleContent;
 
-    /** 浏览量 */
     private Integer viewNum;
 
-    /** 点赞数 */
     private Integer likeNum;
 
-    /** 评论数 */
     private Integer commentNum;
 
-    /** 发布时间  */
     private Date createTime;
 
-    public ArticleDetail(Long id, Long authorId, String authorName, String authorPhoto, String title, String articleContent, Integer viewNum, Integer likeNum, Integer commentNum, Date createTime) {
+    private Integer page;
+
+    private Integer pageSize;
+
+    public ArticleSearchDto(Long id, Long authorId, String authorName, String authorPhoto, String title, String articleContent, Integer viewNum, Integer likeNum, Integer commentNum, Date createTime) {
         this.id = id;
         this.authorId = authorId;
         this.authorName = authorName;
@@ -47,7 +40,7 @@ public class ArticleDetail {
         this.createTime = createTime;
     }
 
-    public ArticleDetail() {
+    public ArticleSearchDto() {
         super();
     }
 
@@ -129,5 +122,13 @@ public class ArticleDetail {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
     }
 }
