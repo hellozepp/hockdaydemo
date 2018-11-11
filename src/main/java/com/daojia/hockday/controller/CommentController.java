@@ -7,6 +7,8 @@ import com.daojia.hockday.entity.ArticleDetail;
 import com.daojia.hockday.entity.CommentLink;
 import com.daojia.hockday.service.ArticleService;
 import com.daojia.hockday.service.CommentService;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -26,11 +28,13 @@ public class CommentController {
     private ArticleService articleService;
 
 
+    @RequestMapping(value="/comment/{articleId}",method= RequestMethod.GET)
     public String getAllComment(Long articleId) {
         List<CommentLink> list = commentService.getAllComment(articleId);
         return JSON.toJSONString(list);
     }
 
+    @RequestMapping(value="/comment/{commentId}",method= RequestMethod.GET)
     public String getComment(Long commentId) {
         CommentLink commentLink = commentService.getComment(commentId);
         return JSON.toJSONString(commentLink);
@@ -41,6 +45,7 @@ public class CommentController {
      * @return
      * @desc 得到文章详情和评论
      **/
+    @RequestMapping(value="/comment/article/{articleId}",method= RequestMethod.GET)
     public String getArticleAndComment(Long articleId) {
         JSONArray array = new JSONArray();
         List<CommentLink> list = commentService.getAllComment(articleId);
@@ -50,7 +55,7 @@ public class CommentController {
         for (CommentLink link : list) {
             array.add(JSON.toJSONString(link));
         }
-        all.put("comment", array.toJSONString());
+        all.put("comments", array.toJSONString());
         return all.toJSONString();
     }
 
