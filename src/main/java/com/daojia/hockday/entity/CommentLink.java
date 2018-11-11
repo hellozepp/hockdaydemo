@@ -5,16 +5,22 @@ import java.util.Date;
 public class CommentLink {
     private Long id;
 
+    /* 文章ID */
     private Long articleId;
 
+    /* 受评价人 */
     private Long acceptorId;
 
+    /* 评价人 */
     private Long criticismId;
 
+    /* 文章作者 */
     private Long authorId;
 
+    /* 评价内容 */
     private String criticismContent;
 
+    /* 创建时间 */
     private Date createTime;
 
     public CommentLink(Long id, Long articleId, Long acceptorId, Long criticismId, Long authorId, String criticismContent, Date createTime) {
