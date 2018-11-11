@@ -4,11 +4,13 @@ import com.daojia.hockday.entity.CommentLink;
 import com.daojia.hockday.service.CommentService;
 
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 /**
  * @author lei shuiyu
  * @date 2018/11/11 17:38
  */
+@Service
 public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentLink> getAllComment(Long articeId) {
