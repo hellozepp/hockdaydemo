@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context.xsd
+                           ">
+
+    <context:component-scan base-package="com.daojia.hockday"/>
+
+    <context:property-placeholder location="classpath*:mysql.properties" ignore-unresolvable="true"/>
+
+    <!-- 数据源 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${userProduct.jdbc.driver}"/>
+        <property name="url" value="${userProduct.jdbc.url}"/>
+        <property name="username" value="${userProduct.jdbc.username}"/>
+        <property name="password" value="${userProduct.jdbc.password}"/>
+        <property name="maxActive" value="${userProduct.jdbc.maxActive}"/>
+        <property name="maxWait" value="${userProduct.jdbc.maxWait}"/>
+        <property name="minIdle" value="${userProduct.jdbc.minIdle}"/>
+        <property name="initialSize" value="${userProduct.jdbc.initial.size}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="10000"/>
+        <!-- 每隔毫秒秒检查一次连接池中空闲的连接 -->
+        <property name="minEvictableIdleTimeMillis" value="10000"/>
+        <!-- 连接池中连接可空闲的时间,毫秒 -->
+        <property name="removeAbandoned" value="true"/>
+        <!-- 是否清理removeAbandonedTimeout秒没有使用的活动连接,清理后并没有放回连接池 -->
+        <property name="removeAbandonedTimeout" value="300"/>
+        <!-- 活动连接的最大空闲时间 -->
+        <property name="testOnBorrow" value="true"/>
+        <property name="validationQuery" value="SELECT 1"/>
+        <property name="logAbandoned" value="true"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="connectionProperties" value="useUnicode=true;characterEncoding=utf8;connectTimeout=5000;socketTimeout=60000;autoReconnect=true;failOverReadOnly=false"/>
+        <property name="connectionInitSqls" value="set names utf8mb4"/>
+    </bean>
+
+    <!-- default xml scan -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 显式指定Mapper文件位置 -->
+        <property name="mapperLocations" value="classpath*:xmlmapper/*.xml"/>
+    </bean>
+
+    <!-- default mapper scan -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.daojia.hockday.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+</beans>
