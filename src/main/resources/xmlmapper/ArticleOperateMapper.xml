@@ -96,4 +96,40 @@
       operate_time = #{operateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+
+    <!-- 查询库中 是否有指定文章下的条件的 记录 按条件查询 -->
+    <select id="selectOperationByArticles" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from t_hockday_article_operate_log
+        where '1' = '1'
+        <if test="userId != null">
+            AND user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+        <if test='articleIdList != null and articleIdList.size() > 0'>
+            AND article_id IN
+            <foreach collection="articleIdList" item="articleId" separator="," open="(" close=")">
+                #{articleId,jdbcType=BIGINT}
+            </foreach>
+        </if>
+    </select>
+
+    <!-- 删除库中 是否有指定条件的 记录 按条件查询 -->
+    <delete id="deleteOperationByParamMap" parameterType="java.util.Map">
+        delete
+        from t_app_article_user_operate
+        where '1' = '1'
+        <if test="userId != null">
+            AND user_id = #{userId,jdbcType=BIGINT}
+        </if>
+        <if test="articleId != null">
+            AND article_id = #{articleId,jdbcType=BIGINT}
+        </if>
+        <if test="operationType != null">
+            AND operate_type = #{operationType,jdbcType=INTEGER}
+        </if>
+    </delete>
+
 </mapper>

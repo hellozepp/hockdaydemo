@@ -1,10 +1,10 @@
 package com.daojia.hockday.service;
 
 import com.daojia.hockday.entity.ArticleDetail;
+import com.daojia.hockday.entity.ArticleOperate;
 import com.daojia.hockday.entity.ArticleSearchDto;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author by Dawei on 2018/11/11.
@@ -21,9 +21,9 @@ public interface ArticleService {
 
     /**
      * 操作文章
-     * @param paraMap 文章实体
+     * @param articleOperate 文章操作实体
      */
-    default Integer operationArticle(Map<String, Object> paraMap) {return 0;}
+    default Integer operationArticle(ArticleOperate articleOperate) {return 0;}
 
     /**
      * 获取文章列表

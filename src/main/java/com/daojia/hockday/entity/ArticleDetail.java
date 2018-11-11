@@ -31,6 +31,8 @@ public class ArticleDetail implements Serializable {
     /** 点赞数 */
     private Integer likeNum;
 
+    private Integer ifLiked;
+
     /** 评论数 */
     private Integer commentNum;
 
@@ -116,6 +118,14 @@ public class ArticleDetail implements Serializable {
 
     public void setLikeNum(Integer likeNum) {
         this.likeNum = likeNum;
+    }
+
+    public Integer getIfLiked() {
+        return ifLiked;
+    }
+
+    public void setIfLiked(Integer ifLiked) {
+        this.ifLiked = ifLiked;
     }
 
     public Integer getCommentNum() {

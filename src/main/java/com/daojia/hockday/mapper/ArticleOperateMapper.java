@@ -1,6 +1,8 @@
 package com.daojia.hockday.mapper;
 
 import com.daojia.hockday.entity.ArticleOperate;
+import java.util.List;
+import java.util.Map;
 
 public interface ArticleOperateMapper {
 
@@ -17,4 +19,11 @@ public interface ArticleOperateMapper {
     int updateByPrimaryKeySelective(ArticleOperate record);
 
     int updateByPrimaryKey(ArticleOperate record);
+
+    List<ArticleOperate> getOperationByArticleIds(List<Long> articleIdCollect, Long userId);
+
+
+    int deleteOperationByParamMap(Map<String, Object> paramMap);
+
 }
+

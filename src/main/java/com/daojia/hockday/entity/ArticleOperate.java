@@ -13,12 +13,15 @@ public class ArticleOperate {
 
     private Date operateTime;
 
-    public ArticleOperate(Long id, Long articleId, Long userId, Integer operateType, Date operateTime) {
+    private Integer operateValue;
+
+    public ArticleOperate(Long id, Long articleId, Long userId, Integer operateType, Date operateTime, Integer operateValue) {
         this.id = id;
         this.articleId = articleId;
         this.userId = userId;
         this.operateType = operateType;
         this.operateTime = operateTime;
+        this.operateValue = operateValue;
     }
 
     public ArticleOperate() {
@@ -63,5 +66,13 @@ public class ArticleOperate {
 
     public void setOperateTime(Date operateTime) {
         this.operateTime = operateTime;
+    }
+
+    public Integer getOperateValue() {
+        return operateValue;
+    }
+
+    public void setOperateValue(Integer operateValue) {
+        this.operateValue = operateValue;
     }
 }
