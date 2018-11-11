@@ -21,4 +21,9 @@ public class CommentServiceImpl implements CommentService {
     public CommentLink getComment(Long commentId) {
         return null;
     }
+
+    @Override
+    public void saveComment(CommentLink commentLink) {
+
+    }
 }
