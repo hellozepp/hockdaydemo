@@ -26,11 +26,19 @@ public interface ArticleService {
     default Integer operationArticle(Map<String, Object> paraMap) {return 0;}
 
     /**
-     * 操作文章
+     * 获取文章列表
      * @param articleSearchDto 文章实体
      */
     default List<ArticleDetail> getArticleDetailList(ArticleSearchDto articleSearchDto) {return new ArrayList<>();}
 
+
+
+
+    /**
+     * 操作文章
+     * @param articleId 文章ID
+     */
+    default ArticleDetail getArticleDetailById(Long articleId) {return new ArticleDetail();}
 
 
 
