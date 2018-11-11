@@ -1,8 +1,12 @@
 package com.daojia.hockday.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class CommentLink {
+public class CommentLink implements Serializable {
+
+    private static final long serialVersionUID = -891116960514143414L;
+
     private Long id;
 
     /* 文章ID */
