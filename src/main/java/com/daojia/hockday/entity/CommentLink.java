@@ -17,6 +17,8 @@ public class CommentLink {
     /* 文章作者 */
     private Long authorId;
 
+    /* 点赞数 */
+    private Integer likeNum;
     /* 评价内容 */
     private String criticismContent;
 

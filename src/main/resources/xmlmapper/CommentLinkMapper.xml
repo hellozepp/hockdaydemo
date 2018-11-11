@@ -8,17 +8,19 @@
       <arg column="acceptor_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="criticism_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="author_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="like_num" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="criticism_content" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, article_id, acceptor_id, criticism_id, author_id, criticism_content, create_time
+    id, article_id, acceptor_id, criticism_id, author_id, like_num, criticism_content,
+    create_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_hockday_comment_link
     where id = #{id,jdbcType=BIGINT}
@@ -29,12 +31,12 @@
   </delete>
 
   <insert id="insert" parameterType="com.daojia.hockday.entity.CommentLink" >
-    insert into t_hockday_comment_link (id, article_id, acceptor_id, 
-      criticism_id, author_id, criticism_content, 
-      create_time)
-    values (#{id,jdbcType=BIGINT}, #{articleId,jdbcType=BIGINT}, #{acceptorId,jdbcType=BIGINT}, 
-      #{criticismId,jdbcType=BIGINT}, #{authorId,jdbcType=BIGINT}, #{criticismContent,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP})
+    insert into t_hockday_comment_link (id, article_id, acceptor_id,
+      criticism_id, author_id, like_num,
+      criticism_content, create_time)
+    values (#{id,jdbcType=BIGINT}, #{articleId,jdbcType=BIGINT}, #{acceptorId,jdbcType=BIGINT},
+      #{criticismId,jdbcType=BIGINT}, #{authorId,jdbcType=BIGINT}, #{likeNum,jdbcType=INTEGER},
+      #{criticismContent,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.daojia.hockday.entity.CommentLink" >
     insert into t_hockday_comment_link
@@ -53,6 +55,9 @@
       </if>
       <if test="authorId != null" >
         author_id,
+      </if>
+      <if test="likeNum != null" >
+        like_num,
       </if>
       <if test="criticismContent != null" >
         criticism_content,
@@ -76,6 +81,9 @@
       </if>
       <if test="authorId != null" >
         #{authorId,jdbcType=BIGINT},
+      </if>
+      <if test="likeNum != null" >
+        #{likeNum,jdbcType=INTEGER},
       </if>
       <if test="criticismContent != null" >
         #{criticismContent,jdbcType=VARCHAR},
@@ -101,6 +109,9 @@
       <if test="authorId != null" >
         author_id = #{authorId,jdbcType=BIGINT},
       </if>
+      <if test="likeNum != null" >
+        like_num = #{likeNum,jdbcType=INTEGER},
+      </if>
       <if test="criticismContent != null" >
         criticism_content = #{criticismContent,jdbcType=VARCHAR},
       </if>
@@ -116,6 +127,7 @@
       acceptor_id = #{acceptorId,jdbcType=BIGINT},
       criticism_id = #{criticismId,jdbcType=BIGINT},
       author_id = #{authorId,jdbcType=BIGINT},
+      like_num = #{likeNum,jdbcType=INTEGER},
       criticism_content = #{criticismContent,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
