@@ -3,6 +3,9 @@ package com.daojia.hockday.controller;
 import com.alibaba.fastjson.JSON;
 import com.baidu.aip.speech.AipSpeech;
 import com.daojia.hockday.entity.ArticleDetail;
+import com.daojia.hockday.entity.ArticleOperate;
+import com.daojia.hockday.entity.ArticleSearchDto;
+import com.daojia.hockday.enums.ErrorEnum;
 import com.daojia.hockday.service.ArticleService;
 import com.daojia.hockday.util.ResultDto;
 import org.json.JSONObject;
@@ -18,12 +21,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author by Dawei on 2018/11/11.
@@ -152,10 +152,10 @@ public class ArticleController {
     /**
      * 操作
      *
-     * @param operationType 操作类型 ： 1:点赞
+     * @param operationType  操作类型 ： 1:点赞
      * @param operationValue 操作值
-     * @param userId 用户ID
-     * @param articleId 文章ID
+     * @param userId         用户ID
+     * @param articleId      文章ID
      */
     @PostMapping(value = "/add/operation")
     public String addOperation(Integer operationType, Integer operationValue, Long userId, Long articleId) {
@@ -175,7 +175,5 @@ public class ArticleController {
         Integer integer = articleService.operationArticle(articleOperate);
         return JSON.toJSONString(integer);
     }
-
-
 
 }
