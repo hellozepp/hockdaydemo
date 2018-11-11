@@ -171,16 +171,6 @@
   </select>
 
 
-  <!--  查询 文章列表 -->
-  <select id="getArticleList" parameterType="com.daojia.hockday.entity.ArticleSearchDto" resultMap="BaseResultMap">
-    SELECT
-    <include refid="Base_Column_List" />
-    FROM t_hackday_article_detail
-    <if test="orderBy != null and orderBy != ''">
-      ORDER BY  #{orderBy}
-    </if>
-  </select>
-
   <!-- 文章 操作记录 数量更新  -->
   <update id="addOperationArticle" parameterType="java.util.Map" >
     update t_hackday_article_detail
