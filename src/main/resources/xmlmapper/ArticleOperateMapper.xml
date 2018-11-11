@@ -22,18 +22,18 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from t_hockday_article_operate
+    delete from t_hockday_article_operate_log
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
   <insert id="insert" parameterType="com.daojia.hockday.entity.ArticleOperate" >
-    insert into t_hockday_article_operate (id, article_id, user_id, 
+    insert into t_hockday_article_operate_log (id, article_id, user_id,
       operate_type, operate_time)
     values (#{id,jdbcType=BIGINT}, #{articleId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
       #{operateType,jdbcType=INTEGER}, #{operateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.daojia.hockday.entity.ArticleOperate" >
-    insert into t_hockday_article_operate
+    insert into t_hockday_article_operate_log
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -71,7 +71,7 @@
   </insert>
 
   <update id="updateByPrimaryKeySelective" parameterType="com.daojia.hockday.entity.ArticleOperate" >
-    update t_hockday_article_operate
+    update t_hockday_article_operate_log
     <set >
       <if test="articleId != null" >
         article_id = #{articleId,jdbcType=BIGINT},
@@ -89,7 +89,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.daojia.hockday.entity.ArticleOperate" >
-    update t_hockday_article_operate
+    update t_hockday_article_operate_log
     set article_id = #{articleId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},
       operate_type = #{operateType,jdbcType=INTEGER},
