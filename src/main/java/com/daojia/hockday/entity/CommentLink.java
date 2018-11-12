@@ -98,4 +98,18 @@ public class CommentLink implements Serializable {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+    @Override
+    public String toString() {
+        return "CommentLink{" +
+                "id=" + id +
+                ", articleId=" + articleId +
+                ", acceptorId=" + acceptorId +
+                ", criticismId=" + criticismId +
+                ", authorId=" + authorId +
+                ", likeNum=" + likeNum +
+                ", criticismContent='" + criticismContent + '\'' +
+                ", createTime=" + createTime +
+                '}';
+    }
 }

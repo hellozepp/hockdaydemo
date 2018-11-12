@@ -2,6 +2,8 @@ package com.daojia.hockday.mapper;
 
 import com.daojia.hockday.entity.CommentLink;
 
+import java.util.List;
+
 public interface CommentLinkMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -15,4 +17,6 @@ public interface CommentLinkMapper {
     int updateByPrimaryKeySelective(CommentLink record);
 
     int updateByPrimaryKey(CommentLink record);
+
+    List<CommentLink> getAllComment(Long articelId);
 }

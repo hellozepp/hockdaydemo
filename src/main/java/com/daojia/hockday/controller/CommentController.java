@@ -8,10 +8,7 @@ import com.daojia.hockday.entity.CommentLink;
 import com.daojia.hockday.service.ArticleService;
 import com.daojia.hockday.service.CommentService;
 import com.daojia.hockday.util.ResultDto;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,16 +27,15 @@ public class CommentController {
     private ArticleService articleService;
 
 
-    @RequestMapping(value = "/comment/{articleId}", method = RequestMethod.GET)
-    public String getAllComment(Long articleId) {
-        List<CommentLink> list = commentService.getAllComment(articleId);
-        return "xx";
-        //return JSON.toJSONString(list);
+    @RequestMapping(value = "/get/allcomment", method = RequestMethod.GET)
+    public String getAllComment(String articleId) {
+        List<CommentLink> list = commentService.getAllComment(Long.valueOf(articleId));
+        return JSON.toJSONString(list);
     }
 
-    @RequestMapping(value = "/comment/{commentId}", method = RequestMethod.GET)
-    public String getComment(Long commentId) {
-        CommentLink commentLink = commentService.getComment(commentId);
+    @RequestMapping(value = "/get/comment", method = RequestMethod.GET)
+    public String getComment(String commentId) {
+        CommentLink commentLink = commentService.getComment(Long.valueOf(commentId));
         return JSON.toJSONString(commentLink);
     }
 
@@ -48,7 +44,7 @@ public class CommentController {
      * @return
      * @desc 得到文章详情和评论
      **/
-    @RequestMapping(value = "/comment/article/{articleId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/comment/article", method = RequestMethod.GET)
     public String getArticleAndComment(Long articleId) {
         JSONArray array = new JSONArray();
         List<CommentLink> list = commentService.getAllComment(articleId);

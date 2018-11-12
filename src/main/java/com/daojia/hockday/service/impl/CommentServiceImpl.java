@@ -1,10 +1,15 @@
 package com.daojia.hockday.service.impl;
 
 import com.daojia.hockday.entity.CommentLink;
+import com.daojia.hockday.mapper.CommentLinkMapper;
 import com.daojia.hockday.service.CommentService;
 
+import java.util.LinkedList;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * @author lei shuiyu
@@ -12,18 +17,30 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CommentServiceImpl implements CommentService {
+
+    @Resource
+    CommentLinkMapper commentLinkMapper;
+
     @Override
     public List<CommentLink> getAllComment(Long articeId) {
-        return null;
+        List<CommentLink> list = new LinkedList<>();
+        if (articeId != null) {
+            list = commentLinkMapper.getAllComment(articeId);
+        }
+        return list;
     }
 
     @Override
     public CommentLink getComment(Long commentId) {
-        return null;
+        CommentLink comment = null;
+        if (commentId != null) {
+            comment = commentLinkMapper.selectByPrimaryKey(commentId);
+        }
+        return comment;
     }
 
     @Override
     public void saveComment(CommentLink commentLink) {
-
+       commentLinkMapper.insert(commentLink);
     }
 }

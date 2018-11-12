@@ -19,9 +19,9 @@
     create_time
   </sql>
 
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultType="com.daojia.hockday.entity.CommentLink" parameterType="java.lang.Long" >
     select
-    <include refid="Base_Column_List" />
+    *
     from t_hockday_comment_link
     where id = #{id,jdbcType=BIGINT}
   </select>
@@ -132,4 +132,10 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="getAllComment" resultType="com.daojia.hockday.entity.CommentLink" parameterType="java.lang.Long">
+    select *
+    from t_hockday_comment_link
+    where articleId = #{id,jdbcType=BIGINT}
+  </select>
 </mapper>
