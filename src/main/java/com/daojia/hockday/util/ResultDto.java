@@ -9,7 +9,7 @@ import com.daojia.hockday.enums.ErrorEnum;
  */
 public class ResultDto<T> {
 
-    private Integer code;
+    private Integer code;//0:success 1:fail
 
     private String codeMsg;
 
