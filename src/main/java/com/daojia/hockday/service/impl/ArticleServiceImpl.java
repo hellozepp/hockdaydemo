@@ -116,4 +116,18 @@ public class ArticleServiceImpl implements ArticleService {
         }
         return integer;
     }
+
+
+    /**
+     * 获取单个文章
+     * @param articleId 文章ID
+     */
+    @Override
+    public ArticleDetail getArticleDetailById(Long articleId) {
+        ArticleDetail articleDetail = articleDetailMapper.selectByPrimaryKey(articleId);
+        return articleDetail;
+    }
+
+
+
 }

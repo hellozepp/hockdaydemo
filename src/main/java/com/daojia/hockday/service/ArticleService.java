@@ -35,7 +35,7 @@ public interface ArticleService {
 
 
     /**
-     * 操作文章
+     * 获取单个文章
      * @param articleId 文章ID
      */
     default ArticleDetail getArticleDetailById(Long articleId) {return new ArticleDetail();}

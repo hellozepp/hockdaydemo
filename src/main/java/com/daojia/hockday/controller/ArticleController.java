@@ -1,29 +1,24 @@
 package com.daojia.hockday.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.baidu.aip.speech.AipSpeech;
 import com.daojia.hockday.entity.ArticleDetail;
 import com.daojia.hockday.entity.ArticleOperate;
 import com.daojia.hockday.entity.ArticleSearchDto;
+import com.daojia.hockday.entity.CommentLink;
 import com.daojia.hockday.enums.ErrorEnum;
+import com.daojia.hockday.mapper.CommentLinkMapper;
 import com.daojia.hockday.service.ArticleService;
+import com.daojia.hockday.service.CommentService;
 import com.daojia.hockday.util.ResultDto;
-import org.json.JSONObject;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+import javax.annotation.Resource;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author by Dawei on 2018/11/11.
@@ -34,6 +29,11 @@ public class ArticleController {
 
     @Resource
     private ArticleService articleService;
+
+
+    @Resource
+    private CommentService commentService;
+
 
     /**
      * 获取 发布的列表
@@ -77,10 +77,10 @@ public class ArticleController {
     /**
      * 操作
      *
-     * @param operationType  操作类型 ： 1:点赞
+     * @param operationType 操作类型 ： 1:点赞
      * @param operationValue 操作值
-     * @param userId         用户ID
-     * @param articleId      文章ID
+     * @param userId 用户ID
+     * @param articleId 文章ID
      */
     @PostMapping(value = "/add/operation")
     public String addOperation(Integer operationType, Integer operationValue, Long userId, Long articleId) {
@@ -101,4 +101,56 @@ public class ArticleController {
         return JSON.toJSONString(integer);
     }
 
+    @Resource
+    private CommentLinkMapper mapper1;
+
+    /**
+     * 获取文章详情
+     * @param articleId 文章ID
+     */
+    @GetMapping(value = "/get/article/detail")
+    public String getArticleById(Long articleId) {
+        ResultDto<Map<String, Object>> resultDto = new ResultDto<>();
+        resultDto.setParamError();
+        if(articleId == null) {
+            return JSON.toJSONString(resultDto);
+        }
+        resultDto.setSuccess();
+
+        ArticleDetail articleDetailById = articleService.getArticleDetailById(articleId);
+        List<CommentLink> debutCommentLink = commentService.getDebutCommentLink(articleId);
+        Map<String, Object> resultMap = new HashMap<>();
+        resultDto.setData(resultMap);
+        resultMap.put("articleDetail", articleDetailById);
+        resultMap.put("debutCommentLink", debutCommentLink);
+
+
+
+        return JSON.toJSONString(resultDto);
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

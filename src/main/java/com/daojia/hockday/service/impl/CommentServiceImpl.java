@@ -3,13 +3,11 @@ package com.daojia.hockday.service.impl;
 import com.daojia.hockday.entity.CommentLink;
 import com.daojia.hockday.mapper.CommentLinkMapper;
 import com.daojia.hockday.service.CommentService;
-
 import java.util.LinkedList;
 import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author lei shuiyu
@@ -19,7 +17,46 @@ import javax.annotation.Resource;
 public class CommentServiceImpl implements CommentService {
 
     @Resource
-    CommentLinkMapper commentLinkMapper;
+    private CommentLinkMapper commentLinkMapper;
+
+
+    /**
+     * 获取首层 用户评价
+     * @param articleId 文章ID
+     */
+
+    @Override
+    public List<CommentLink> getDebutCommentLink(Long articleId) {
+        List<CommentLink> debutCommentLinkList = null;
+        try {
+            debutCommentLinkList = commentLinkMapper.getDebutCommentLink(articleId);
+            getChildComment(debutCommentLinkList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return debutCommentLinkList;
+    }
+
+
+    // 递归 获取子集评论 方法
+    private void getChildComment(List<CommentLink> debutCommentLinkList) {
+        if(!CollectionUtils.isEmpty(debutCommentLinkList)) {
+            debutCommentLinkList.forEach(debutComment -> {
+                List<CommentLink> childCommentLink = commentLinkMapper.getChildCommentLink(debutComment.getId());
+                debutComment.setChildCommentList(childCommentLink);
+                /*if(!CollectionUtils.isEmpty(childCommentLink)) {
+                    getChildComment(childCommentLink);
+                }*/
+            });
+        }
+    }
+
+    @Override
+    public List<CommentLink> getCommentLink(CommentLink commentLink) {
+        return null;
+    }
+
+
 
     @Override
     public List<CommentLink> getAllComment(Long articeId) {

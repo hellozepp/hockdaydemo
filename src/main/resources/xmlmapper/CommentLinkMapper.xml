@@ -5,23 +5,23 @@
     <constructor >
       <idArg column="id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="article_id" jdbcType="BIGINT" javaType="java.lang.Long" />
-      <arg column="acceptor_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="criticism_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="author_id" jdbcType="BIGINT" javaType="java.lang.Long" />
-      <arg column="like_num" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="parent_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="original_content" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="criticism_content" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, article_id, acceptor_id, criticism_id, author_id, like_num, criticism_content,
+    id, article_id, criticism_id, author_id, parent_id, original_content, criticism_content,
     create_time
   </sql>
 
-  <select id="selectByPrimaryKey" resultType="com.daojia.hockday.entity.CommentLink" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select
-    *
+    <include refid="Base_Column_List" />
     from t_hockday_comment_link
     where id = #{id,jdbcType=BIGINT}
   </select>
@@ -31,11 +31,11 @@
   </delete>
 
   <insert id="insert" parameterType="com.daojia.hockday.entity.CommentLink" >
-    insert into t_hockday_comment_link (id, article_id, acceptor_id,
-      criticism_id, author_id, like_num,
+    insert into t_hockday_comment_link (id, article_id, criticism_id,
+      author_id, parent_id, original_content,
       criticism_content, create_time)
-    values (#{id,jdbcType=BIGINT}, #{articleId,jdbcType=BIGINT}, #{acceptorId,jdbcType=BIGINT},
-      #{criticismId,jdbcType=BIGINT}, #{authorId,jdbcType=BIGINT}, #{likeNum,jdbcType=INTEGER},
+    values (#{id,jdbcType=BIGINT}, #{articleId,jdbcType=BIGINT}, #{criticismId,jdbcType=BIGINT},
+      #{authorId,jdbcType=BIGINT}, #{parentId,jdbcType=BIGINT}, #{originalContent,jdbcType=VARCHAR},
       #{criticismContent,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.daojia.hockday.entity.CommentLink" >
@@ -47,17 +47,17 @@
       <if test="articleId != null" >
         article_id,
       </if>
-      <if test="acceptorId != null" >
-        acceptor_id,
-      </if>
       <if test="criticismId != null" >
         criticism_id,
       </if>
       <if test="authorId != null" >
         author_id,
       </if>
-      <if test="likeNum != null" >
-        like_num,
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="originalContent != null" >
+        original_content,
       </if>
       <if test="criticismContent != null" >
         criticism_content,
@@ -73,17 +73,17 @@
       <if test="articleId != null" >
         #{articleId,jdbcType=BIGINT},
       </if>
-      <if test="acceptorId != null" >
-        #{acceptorId,jdbcType=BIGINT},
-      </if>
       <if test="criticismId != null" >
         #{criticismId,jdbcType=BIGINT},
       </if>
       <if test="authorId != null" >
         #{authorId,jdbcType=BIGINT},
       </if>
-      <if test="likeNum != null" >
-        #{likeNum,jdbcType=INTEGER},
+      <if test="parentId != null" >
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="originalContent != null" >
+        #{originalContent,jdbcType=VARCHAR},
       </if>
       <if test="criticismContent != null" >
         #{criticismContent,jdbcType=VARCHAR},
@@ -94,14 +94,12 @@
     </trim>
   </insert>
 
+
   <update id="updateByPrimaryKeySelective" parameterType="com.daojia.hockday.entity.CommentLink" >
     update t_hockday_comment_link
     <set >
       <if test="articleId != null" >
         article_id = #{articleId,jdbcType=BIGINT},
-      </if>
-      <if test="acceptorId != null" >
-        acceptor_id = #{acceptorId,jdbcType=BIGINT},
       </if>
       <if test="criticismId != null" >
         criticism_id = #{criticismId,jdbcType=BIGINT},
@@ -109,8 +107,11 @@
       <if test="authorId != null" >
         author_id = #{authorId,jdbcType=BIGINT},
       </if>
-      <if test="likeNum != null" >
-        like_num = #{likeNum,jdbcType=INTEGER},
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="originalContent != null" >
+        original_content = #{originalContent,jdbcType=VARCHAR},
       </if>
       <if test="criticismContent != null" >
         criticism_content = #{criticismContent,jdbcType=VARCHAR},
@@ -124,18 +125,33 @@
   <update id="updateByPrimaryKey" parameterType="com.daojia.hockday.entity.CommentLink" >
     update t_hockday_comment_link
     set article_id = #{articleId,jdbcType=BIGINT},
-      acceptor_id = #{acceptorId,jdbcType=BIGINT},
       criticism_id = #{criticismId,jdbcType=BIGINT},
       author_id = #{authorId,jdbcType=BIGINT},
-      like_num = #{likeNum,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      original_content = #{originalContent,jdbcType=VARCHAR},
       criticism_content = #{criticismContent,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="getAllComment" resultType="com.daojia.hockday.entity.CommentLink" parameterType="java.lang.Long">
-    select *
+
+  <!-- 获取首层评价 -->
+  <select id="getDebutCommentLink" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    id, article_id, criticism_id, author_id, parent_id, original_content, criticism_content, create_time
     from t_hockday_comment_link
-    where articleId = #{id,jdbcType=BIGINT}
+    where article_id = #{articleId,jdbcType=BIGINT} and author_id = 0
+    order by create_time asc
   </select>
+
+  <!-- 获取子评价 -->
+  <select id="getChildCommentLink" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from t_hockday_comment_link
+    where parent_id = #{parentId,jdbcType=BIGINT}
+    order by create_time asc
+  </select>
+
+
 </mapper>

@@ -27,6 +27,7 @@ public class CommentController {
     private ArticleService articleService;
 
 
+
     @RequestMapping(value = "/get/allcomment", method = RequestMethod.GET)
     public String getAllComment(String articleId) {
         List<CommentLink> list = commentService.getAllComment(Long.valueOf(articleId));

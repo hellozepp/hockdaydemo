@@ -2,6 +2,7 @@ package com.daojia.hockday.service;
 
 import com.daojia.hockday.entity.CommentLink;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,6 +10,22 @@ import java.util.List;
  * @date 2018/11/11 17:36
  */
 public interface CommentService {
+
+
+    /**
+     * 获取首层 用户评价
+     * @param articleId 文章ID
+     */
+    default List<CommentLink> getDebutCommentLink(Long articleId) {return  new ArrayList<>(); }
+
+
+    /**
+     * 获取首层 用户评价
+     * @param commentLink 评价信息
+     */
+    default List<CommentLink> getCommentLink(CommentLink commentLink) {return  new ArrayList<>();}
+
+
 
     /**
      * @param articleId 文章id

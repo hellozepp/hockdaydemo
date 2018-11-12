@@ -1,40 +1,34 @@
 package com.daojia.hockday.entity;
 
-import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
-public class CommentLink implements Serializable {
-
-    private static final long serialVersionUID = -891116960514143414L;
-
+public class CommentLink {
     private Long id;
 
-    /* 文章ID */
     private Long articleId;
 
-    /* 受评价人 */
-    private Long acceptorId;
-
-    /* 评价人 */
     private Long criticismId;
 
-    /* 文章作者 */
     private Long authorId;
 
-    /* 点赞数 */
-    private Integer likeNum;
-    /* 评价内容 */
+    private Long parentId;
+
+    private String originalContent;
+
     private String criticismContent;
 
-    /* 创建时间 */
     private Date createTime;
 
-    public CommentLink(Long id, Long articleId, Long acceptorId, Long criticismId, Long authorId, String criticismContent, Date createTime) {
+    private List<CommentLink> childCommentList;
+
+    public CommentLink(Long id, Long articleId, Long criticismId, Long authorId, Long parentId, String originalContent, String criticismContent, Date createTime) {
         this.id = id;
         this.articleId = articleId;
-        this.acceptorId = acceptorId;
         this.criticismId = criticismId;
         this.authorId = authorId;
+        this.parentId = parentId;
+        this.originalContent = originalContent;
         this.criticismContent = criticismContent;
         this.createTime = createTime;
     }
@@ -59,14 +53,6 @@ public class CommentLink implements Serializable {
         this.articleId = articleId;
     }
 
-    public Long getAcceptorId() {
-        return acceptorId;
-    }
-
-    public void setAcceptorId(Long acceptorId) {
-        this.acceptorId = acceptorId;
-    }
-
     public Long getCriticismId() {
         return criticismId;
     }
@@ -81,6 +67,22 @@ public class CommentLink implements Serializable {
 
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getOriginalContent() {
+        return originalContent;
+    }
+
+    public void setOriginalContent(String originalContent) {
+        this.originalContent = originalContent == null ? null : originalContent.trim();
     }
 
     public String getCriticismContent() {
@@ -99,17 +101,12 @@ public class CommentLink implements Serializable {
         this.createTime = createTime;
     }
 
-    @Override
-    public String toString() {
-        return "CommentLink{" +
-                "id=" + id +
-                ", articleId=" + articleId +
-                ", acceptorId=" + acceptorId +
-                ", criticismId=" + criticismId +
-                ", authorId=" + authorId +
-                ", likeNum=" + likeNum +
-                ", criticismContent='" + criticismContent + '\'' +
-                ", createTime=" + createTime +
-                '}';
+    public List<CommentLink> getChildCommentList() {
+        return childCommentList;
     }
+
+    public void setChildCommentList(List<CommentLink> childCommentList) {
+        this.childCommentList = childCommentList;
+    }
+
 }

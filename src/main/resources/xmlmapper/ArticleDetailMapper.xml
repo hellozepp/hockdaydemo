@@ -144,6 +144,8 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
   <update id="updateByPrimaryKey" parameterType="com.daojia.hockday.entity.ArticleDetail" >
     update t_hackday_article_detail
     set author_id = #{authorId,jdbcType=BIGINT},
