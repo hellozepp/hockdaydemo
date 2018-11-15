@@ -60,8 +60,6 @@ public class CommentController {
     }
 
     /**
-     * @param
-     * @return
      * @desc 保存评论
      **/
     @PutMapping(value = "/put/comment")

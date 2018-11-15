@@ -6,8 +6,9 @@ import java.util.List;
 public class CommentLink {
     private Long id;
 
+    //文章ID
     private Long articleId;
-
+    //评论者id
     private Long criticismId;
 
     private Long authorId;

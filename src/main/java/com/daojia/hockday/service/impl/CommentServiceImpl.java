@@ -3,11 +3,12 @@ package com.daojia.hockday.service.impl;
 import com.daojia.hockday.entity.CommentLink;
 import com.daojia.hockday.mapper.CommentLinkMapper;
 import com.daojia.hockday.service.CommentService;
-import java.util.LinkedList;
-import java.util.List;
-import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import javax.annotation.Resource;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author lei shuiyu
@@ -22,6 +23,7 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * 获取首层 用户评价
+     *
      * @param articleId 文章ID
      */
 
@@ -40,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
 
     // 递归 获取子集评论 方法
     private void getChildComment(List<CommentLink> debutCommentLinkList) {
-        if(!CollectionUtils.isEmpty(debutCommentLinkList)) {
+        if (!CollectionUtils.isEmpty(debutCommentLinkList)) {
             debutCommentLinkList.forEach(debutComment -> {
                 List<CommentLink> childCommentLink = commentLinkMapper.getChildCommentLink(debutComment.getId());
                 debutComment.setChildCommentList(childCommentLink);
@@ -52,10 +54,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public Integer saveComment(CommentLink commentLink) {
+        return commentLinkMapper.insertSelective(commentLink);
+    }
+
+
+    @Override
     public List<CommentLink> getCommentLink(CommentLink commentLink) {
         return null;
     }
-
 
 
     @Override
@@ -76,8 +83,5 @@ public class CommentServiceImpl implements CommentService {
         return comment;
     }
 
-    @Override
-    public void saveComment(CommentLink commentLink) {
-       commentLinkMapper.insert(commentLink);
-    }
+
 }

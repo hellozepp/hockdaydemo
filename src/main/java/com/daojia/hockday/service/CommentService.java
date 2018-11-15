@@ -14,17 +14,27 @@ public interface CommentService {
 
     /**
      * 获取首层 用户评价
+     *
      * @param articleId 文章ID
      */
-    default List<CommentLink> getDebutCommentLink(Long articleId) {return  new ArrayList<>(); }
+    default List<CommentLink> getDebutCommentLink(Long articleId) {
+        return new ArrayList<>();
+    }
 
+    /**
+     * 保存实体
+     * @param commentLink 评论实体
+     */
+    default Integer saveComment(CommentLink commentLink) {return 0;}
 
     /**
      * 获取首层 用户评价
+     *
      * @param commentLink 评价信息
      */
-    default List<CommentLink> getCommentLink(CommentLink commentLink) {return  new ArrayList<>();}
-
+    default List<CommentLink> getCommentLink(CommentLink commentLink) {
+        return new ArrayList<>();
+    }
 
 
     /**
@@ -42,10 +52,4 @@ public interface CommentService {
     public CommentLink getComment(Long commentId);
 
 
-    /**
-     * @desc 保存评论
-     * @param
-     * @return
-     **/
-    public void saveComment(CommentLink commentLink);
 }
