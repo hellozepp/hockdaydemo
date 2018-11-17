@@ -1,26 +1,26 @@
 package com.daojia.hockday.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.daojia.hockday.entity.ArticleDetail;
-import com.daojia.hockday.entity.ArticleOperate;
-import com.daojia.hockday.entity.ArticleSearchDto;
-import com.daojia.hockday.entity.CommentLink;
+import com.daojia.hockday.entity.*;
 import com.daojia.hockday.enums.ErrorEnum;
-import com.daojia.hockday.mapper.CommentLinkMapper;
+import com.daojia.hockday.mapper.UserInfoMapper;
 import com.daojia.hockday.service.ArticleService;
 import com.daojia.hockday.service.CommentService;
+import com.daojia.hockday.util.EncryptUtil;
 import com.daojia.hockday.util.ResultDto;
+import com.daojia.hockday.util.UniqueIDUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author by Dawei on 2018/11/11.
@@ -28,11 +28,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ArticleController {
 
+    private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
     @Resource
     private ArticleService articleService;
 
     @Resource
     private CommentService commentService;
+
+    @Resource
+    private UserInfoMapper userInfoMapper;
 
 
     /**
@@ -42,6 +46,7 @@ public class ArticleController {
      */
     @GetMapping(value = "/get/article/list")
     public String getArticleList(Integer type) {
+        logger.info("获取文章列表， type={}", type);
         ResultDto<List<ArticleDetail>> resultDto = new ResultDto<>();
         resultDto.setCode(ErrorEnum.SUCCESS.getCode());
         resultDto.setCodeMsg(ErrorEnum.SUCCESS.getDesc());
@@ -59,6 +64,7 @@ public class ArticleController {
         }
         List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto);
         resultDto.setData(articleDetailList);
+        logger.info("Result 获取文章列表值， resultDto={}", JSON.toJSONString(resultDto));
         return JSON.toJSONString(resultDto);
     }
 
@@ -67,10 +73,27 @@ public class ArticleController {
      *
      * @param articleDetail 文章
      */
-    @PutMapping(value = "/put/article")
-    public String getIndex(ArticleDetail articleDetail) {
-        Integer integer = articleService.addArticleDetail(articleDetail);
-        return JSON.toJSONString(integer);
+    @PostMapping(value = "/put/article")
+    public String getIndex(ArticleDetail articleDetail, String token) {
+        logger.info("To 添加文章， token={}， articleDetail={}", token, JSON.toJSONString(articleDetail));
+        ResultDto<Integer> resultDto = new ResultDto<>();
+        resultDto.setSuccess();
+        if (StringUtils.isNotBlank(token) && articleDetail != null) {
+            UserInfo userByMd5Key = userInfoMapper.getUserByMd5Key(EncryptUtil.encrypt(token));
+            if (userByMd5Key != null) {
+                articleDetail.setId(UniqueIDUtil.getUniqueID());
+                articleDetail.setAuthorId(userByMd5Key.getId());
+                articleDetail.setAuthorName(userByMd5Key.getUserName());
+                articleDetail.setAuthorPhoto(userByMd5Key.getPhotoUrl());
+            }
+            logger.info("添加文章内容， articleDetail{}", JSON.toJSONString(articleDetail));
+            Integer integer = articleService.addArticleDetail(articleDetail);
+            resultDto.setData(integer);
+        } else {
+            resultDto.setParamError();
+        }
+        logger.info("Result : 添加文章内容， resultDto={}", JSON.toJSONString(resultDto));
+        return JSON.toJSONString(resultDto);
     }
 
 
@@ -84,9 +107,9 @@ public class ArticleController {
      */
     @PostMapping(value = "/add/operation")
     public String addOperation(Integer operationType, Integer operationValue, Long userId, Long articleId) {
-        ResultDto resultDto = new ResultDto();
-        resultDto.setCode(ErrorEnum.ERROR_PARAM.getCode());
-        resultDto.setCodeMsg(ErrorEnum.ERROR_PARAM.getDesc());
+        logger.info("对文章进行操作，operationType={}， operationValue={}， userId={}，articleId={} ", operationType, operationValue, userId, articleId);
+        ResultDto<Integer> resultDto = new ResultDto<>();
+        resultDto.setParamError();
         if (operationType == null || operationValue == null || userId == null || articleId == null) {
             return JSON.toJSONString(resultDto);
         }
@@ -98,7 +121,9 @@ public class ArticleController {
         articleOperate.setOperateTime(new Date());
 
         Integer integer = articleService.operationArticle(articleOperate);
-        return JSON.toJSONString(integer);
+        resultDto.setSuccess();
+        resultDto.setData(integer);
+        return JSON.toJSONString(resultDto);
     }
 
 
@@ -109,19 +134,22 @@ public class ArticleController {
      */
     @GetMapping(value = "/get/article/detail")
     public String getArticleById(Long articleId) {
+        logger.info("获取文章详情和相应的评论信息，articleId={} ", articleId);
         ResultDto<Map<String, Object>> resultDto = new ResultDto<>();
         resultDto.setParamError();
         if (articleId == null) {
             return JSON.toJSONString(resultDto);
         }
         resultDto.setSuccess();
-
         ArticleDetail articleDetailById = articleService.getArticleDetailById(articleId);
+        logger.info("文章结果， articleDetailById={}", JSON.toJSONString(articleDetailById));
         List<CommentLink> debutCommentLink = commentService.getDebutCommentLink(articleId);
+        logger.info("评论内容， debutCommentLink={}", JSON.toJSONString(debutCommentLink));
         Map<String, Object> resultMap = new HashMap<>();
         resultDto.setData(resultMap);
         resultMap.put("articleDetail", articleDetailById);
         resultMap.put("debutCommentLink", debutCommentLink);
+        logger.info("查询结果， resultDto={}", JSON.toJSONString(resultDto));
         return JSON.toJSONString(resultDto);
     }
 

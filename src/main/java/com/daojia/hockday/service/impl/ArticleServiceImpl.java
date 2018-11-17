@@ -7,15 +7,12 @@ import com.daojia.hockday.mapper.ArticleDetailMapper;
 import com.daojia.hockday.mapper.ArticleOperateMapper;
 import com.daojia.hockday.service.ArticleService;
 import com.daojia.hockday.util.UniqueIDUtil;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author by Dawei on 2018/11/11.
@@ -63,8 +60,10 @@ public class ArticleServiceImpl implements ArticleService {
         Long authorId = articleSearchDto.getAuthorId();
         //文章已读 状态 查询
         if (!CollectionUtils.isEmpty(articleList)) {
-            articleList.forEach(articleDetail ->
-                articleDetail.setIfLiked(2));
+            articleList.forEach(articleDetail ->  {
+                articleDetail.setIfLiked(2);
+                articleDetail.setCreateTimeStr(dateFormat(articleDetail.getCreateTime()));
+            });
             if (authorId != null) {
                 try {
                     List<Long> articleIdCollect = articleList.stream().map(ArticleDetail::getId).collect(Collectors.toList());
@@ -100,11 +99,10 @@ public class ArticleServiceImpl implements ArticleService {
             Integer operateType = articleOperate.getOperateType();
 
             Map<String, Object> paraMap = new HashMap<>();
-            paraMap.put("operationType", 1);
-            paraMap.put("operationValue", 1);
+            paraMap.put("operationType", operateType);
             paraMap.put("userId", articleOperate.getUserId());
             paraMap.put("articleId", articleOperate.getArticleId());
-            if (operateType != null && operateType == 1) {
+            if (operateType != null && operateValue != null) {
                 int deleteResult = articleOperateMapper.deleteOperationByParamMap(paraMap);
                 if (operateValue > 0) {
                     integer = articleDetailMapper.addOperationArticle(paraMap);
@@ -120,14 +118,39 @@ public class ArticleServiceImpl implements ArticleService {
 
     /**
      * 获取单个文章
+     *
      * @param articleId 文章ID
      */
     @Override
     public ArticleDetail getArticleDetailById(Long articleId) {
         ArticleDetail articleDetail = articleDetailMapper.selectByPrimaryKey(articleId);
+        articleDetail.setCreateTimeStr(dateFormat(articleDetail.getCreateTime()));
         return articleDetail;
     }
 
+
+    private String dateFormat(Date date) {
+        String resultStr = "刚刚";
+        if (date != null) {
+            long time = date.getTime();
+            long currentTime = System.currentTimeMillis();
+            if ((currentTime - time) / (1000 * 60 * 60 * 24) > 0) {
+                long day = (currentTime - time) / (1000 * 60 * 60 * 24);
+                resultStr = String.valueOf(day + "天前");
+            } else if ((currentTime - time) / (1000 * 60 * 60) > 0) {
+                long hour = (currentTime - time) / (1000 * 60 * 60);
+                resultStr = String.valueOf(hour + "小时前");
+            } else if ((currentTime - time) / (1000 * 60) > 0) {
+                long min = (currentTime - time) / (1000 * 60 * 60);
+
+                resultStr = String.valueOf(min + "分前");
+            } else if ((currentTime - time) / (1000) > 0) {
+                long second = (currentTime - time) / (1000);
+                resultStr = String.valueOf(second + "秒前");
+            }
+        }
+        return resultStr;
+    }
 
 
 }

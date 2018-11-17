@@ -22,7 +22,7 @@ public interface ArticleDetailMapper {
     /* 查询文章列表 */
     List<ArticleDetail> getArticleList(ArticleSearchDto articleSearchDto);
 
-    /* 添加查询文章列表 */
+    /* 添加对文章的操作 */
     Integer addOperationArticle(Map<String, Object> parmMap);
 
     /* 减少  */

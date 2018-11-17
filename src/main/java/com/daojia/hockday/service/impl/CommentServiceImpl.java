@@ -3,10 +3,12 @@ package com.daojia.hockday.service.impl;
 import com.daojia.hockday.entity.CommentLink;
 import com.daojia.hockday.mapper.CommentLinkMapper;
 import com.daojia.hockday.service.CommentService;
+import com.daojia.hockday.util.UniqueIDUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -55,6 +57,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Integer saveComment(CommentLink commentLink) {
+        if(commentLink == null) {
+            return 0;
+        }
+        commentLink.setId(UniqueIDUtil.getUniqueID());
+        commentLink.setCreateTime(new Date());
         return commentLinkMapper.insertSelective(commentLink);
     }
 

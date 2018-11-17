@@ -47,10 +47,10 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
     <!-- 出错页面定义 -->
-    <error-page>
+   <!-- <error-page>
         <exception-type>java.lang.Exception</exception-type>
         <location>/WEB-INF/jsp/error.jsp</location>
-    </error-page>
+    </error-page>-->
      <welcome-file-list>
         <welcome-file>index.html</welcome-file>
         <welcome-file>index.htm</welcome-file>

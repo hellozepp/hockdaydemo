@@ -39,6 +39,8 @@ public class ArticleDetail implements Serializable {
     /** 发布时间  */
     private Date createTime;
 
+    private String createTimeStr;
+
     public ArticleDetail(Long id, Long authorId, String authorName, String authorPhoto, String title, String articleContent, Integer viewNum, Integer likeNum, Integer commentNum, Date createTime) {
         this.id = id;
         this.authorId = authorId;
@@ -142,5 +144,13 @@ public class ArticleDetail implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getCreateTimeStr() {
+        return createTimeStr;
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
     }
 }

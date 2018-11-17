@@ -24,16 +24,16 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from t_hackday_article_detail
+    from t_hockday_article_detail
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from t_hackday_article_detail
+    delete from t_hockday_article_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
   <insert id="insert" parameterType="com.daojia.hockday.entity.ArticleDetail" >
-    insert into t_hackday_article_detail (id, author_id, author_name, 
+    insert into t_hockday_article_detail (id, author_id, author_name,
       author_photo, title, article_content, 
       view_num, like_num, comment_num, 
       create_time)
@@ -44,7 +44,7 @@
   </insert>
 
   <insert id="insertSelective" parameterType="com.daojia.hockday.entity.ArticleDetail" >
-    insert into t_hackday_article_detail
+    insert into t_hockday_article_detail
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -112,7 +112,7 @@
   </insert>
 
   <update id="updateByPrimaryKeySelective" parameterType="com.daojia.hockday.entity.ArticleDetail" >
-    update t_hackday_article_detail
+    update t_hockday_article_detail
     <set >
       <if test="authorId != null" >
         author_id = #{authorId,jdbcType=BIGINT},
@@ -147,7 +147,7 @@
 
 
   <update id="updateByPrimaryKey" parameterType="com.daojia.hockday.entity.ArticleDetail" >
-    update t_hackday_article_detail
+    update t_hockday_article_detail
     set author_id = #{authorId,jdbcType=BIGINT},
       author_name = #{authorName,jdbcType=VARCHAR},
       author_photo = #{authorPhoto,jdbcType=VARCHAR},
@@ -166,7 +166,7 @@
   <select id="getArticleList" parameterType="com.daojia.hockday.entity.ArticleSearchDto" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
-    FROM t_hackday_article_detail
+    FROM t_hockday_article_detail
     <if test="orderBy != null and orderBy != ''">
       ORDER BY  #{orderBy}
     </if>
@@ -175,23 +175,24 @@
 
   <!-- 文章 操作记录 数量更新  -->
   <update id="addOperationArticle" parameterType="java.util.Map" >
-    update t_hackday_article_detail
+    update t_hockday_article_detail
     <if test="operationType == 1">
-      <if test="operationValue > 0">
-        set like_num = like_num + operationValue
-      </if>
+        set like_num = like_num + 1
     </if>
-    where  id = #{id,jdbcType=BIGINT}
+    <if test="operationType == 2">
+      set like_num = comment_num + 1
+    </if>
+    where  id = #{articleId,jdbcType=BIGINT}
   </update>
 
-  <!-- 文章 操作记录 数量更新  -->
+  <!-- 文章 操作记录 数量更新 减  -->
   <update id="subOperationArticle" parameterType="java.util.Map" >
-    update t_hackday_article_detail
+    update t_hockday_article_detail
     <if test="operationType == 1">
       <if test="operationValue > 0">
         set like_num = like_num - 1
       </if>
     </if>
-    where  id = #{id,jdbcType=BIGINT}
+    where  id = #{articleId,jdbcType=BIGINT}
   </update>
 </mapper>
