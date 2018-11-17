@@ -7,10 +7,13 @@ import com.daojia.hockday.mapper.ArticleDetailMapper;
 import com.daojia.hockday.mapper.ArticleOperateMapper;
 import com.daojia.hockday.service.ArticleService;
 import com.daojia.hockday.util.UniqueIDUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +22,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ArticleServiceImpl implements ArticleService {
+
+    public static final Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 
 
     @Resource
@@ -51,24 +56,28 @@ public class ArticleServiceImpl implements ArticleService {
      * @param articleSearchDto 参数
      */
     @Override
-    public List<ArticleDetail> getArticleDetailList(ArticleSearchDto articleSearchDto) {
+    public List<ArticleDetail> getArticleDetailList(ArticleSearchDto articleSearchDto, Long userId) {
         List<ArticleDetail> articleList = new ArrayList<>();
         if (articleSearchDto == null) {
             return articleList;
         }
         articleList = articleDetailMapper.getArticleList(articleSearchDto);
-        Long authorId = articleSearchDto.getAuthorId();
-        //文章已读 状态 查询
+
+        //点赞状态 查询
         if (!CollectionUtils.isEmpty(articleList)) {
             articleList.forEach(articleDetail ->  {
                 articleDetail.setIfLiked(2);
                 articleDetail.setCreateTimeStr(dateFormat(articleDetail.getCreateTime()));
             });
-            if (authorId != null) {
+            if (userId != null) {
                 try {
                     List<Long> articleIdCollect = articleList.stream().map(ArticleDetail::getId).collect(Collectors.toList());
                     if (!CollectionUtils.isEmpty(articleIdCollect)) {
-                        List<ArticleOperate> operationByArticleList = articleOperateMapper.getOperationByArticleIds(articleIdCollect, authorId);
+                        Map<String, Object> paramMap = new HashMap<>();
+                        paramMap.put("userId", userId);
+                        paramMap.put("operationType", 1);
+                        paramMap.put("articleIdList", articleIdCollect);
+                        List<ArticleOperate> operationByArticleList = articleOperateMapper.selectOperationByArticles(paramMap);
 
                         List<Long> readIdList = operationByArticleList.stream().map(ArticleOperate::getArticleId).collect(Collectors.toList());
                         articleList.forEach(articleConfigResultDto -> {
@@ -104,10 +113,12 @@ public class ArticleServiceImpl implements ArticleService {
             paraMap.put("articleId", articleOperate.getArticleId());
             if (operateType != null && operateValue != null) {
                 int deleteResult = articleOperateMapper.deleteOperationByParamMap(paraMap);
-                if (operateValue > 0) {
+                if (operateValue == 1) {
                     integer = articleDetailMapper.addOperationArticle(paraMap);
+                    articleOperate.setId(UniqueIDUtil.getUniqueID());
+                    articleOperate.setOperateTime(new Date());
                     int insertResult = articleOperateMapper.insertSelective(articleOperate);
-                } else if (operateValue < 0) {
+                } else if (operateValue == 2) {
                     integer = articleDetailMapper.subOperationArticle(paraMap);
                 }
             }
@@ -130,13 +141,19 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     private String dateFormat(Date date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
         String resultStr = "刚刚";
         if (date != null) {
             long time = date.getTime();
             long currentTime = System.currentTimeMillis();
             if ((currentTime - time) / (1000 * 60 * 60 * 24) > 0) {
                 long day = (currentTime - time) / (1000 * 60 * 60 * 24);
+                if(day >= 7) {
+                    resultStr = simpleDateFormat.format(date);
+                } else {
                 resultStr = String.valueOf(day + "天前");
+                }
             } else if ((currentTime - time) / (1000 * 60 * 60) > 0) {
                 long hour = (currentTime - time) / (1000 * 60 * 60);
                 resultStr = String.valueOf(hour + "小时前");

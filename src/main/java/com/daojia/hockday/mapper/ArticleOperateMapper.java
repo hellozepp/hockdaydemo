@@ -20,7 +20,7 @@ public interface ArticleOperateMapper {
 
     int updateByPrimaryKey(ArticleOperate record);
 
-    List<ArticleOperate> getOperationByArticleIds(List<Long> articleIdCollect, Long userId);
+    List<ArticleOperate> selectOperationByArticles(Map<String, Object> paramMap);
 
 
     int deleteOperationByParamMap(Map<String, Object> paramMap);

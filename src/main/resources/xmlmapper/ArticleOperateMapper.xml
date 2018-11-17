@@ -114,12 +114,15 @@
                 #{articleId,jdbcType=BIGINT}
             </foreach>
         </if>
+        <if test="operationType != null">
+            AND operate_type = #{operationType,jdbcType=INTEGER}
+        </if>
     </select>
 
     <!-- 删除库中 是否有指定条件的 记录 按条件查询 -->
     <delete id="deleteOperationByParamMap" parameterType="java.util.Map">
         delete
-        from t_app_article_user_operate
+        from t_hockday_article_operate_log
         where '1' = '1'
         <if test="userId != null">
             AND user_id = #{userId,jdbcType=BIGINT}

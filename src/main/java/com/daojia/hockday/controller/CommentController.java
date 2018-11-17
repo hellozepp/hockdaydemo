@@ -35,7 +35,7 @@ public class CommentController {
      **/
     @PostMapping(value = "/put/comment")
     public String saveComment(CommentLink commentLink) {
-        logger.info("To 创建评论 commentLink={}", JSON.toJSONString(commentLink));
+            logger.info("To 创建评论 commentLink={}", JSON.toJSONString(commentLink));
         ResultDto<Integer> resultDto = new ResultDto<>();
         resultDto.setParamError();
         if(commentLink != null) {

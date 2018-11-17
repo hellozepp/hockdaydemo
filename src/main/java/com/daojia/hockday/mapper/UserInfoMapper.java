@@ -11,5 +11,6 @@ public interface UserInfoMapper {
 
     Integer insertSelective(UserInfo userInfo);
 
+    UserInfo selectByPrimaryKey(Long userId);
 
 }

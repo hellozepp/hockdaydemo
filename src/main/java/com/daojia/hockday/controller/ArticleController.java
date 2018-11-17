@@ -45,8 +45,8 @@ public class ArticleController {
      * @param type 列表类型 1:最热 2：最新
      */
     @GetMapping(value = "/get/article/list")
-    public String getArticleList(Integer type) {
-        logger.info("获取文章列表， type={}", type);
+    public String getArticleList(Integer type, Long userId) {
+        logger.info("获取文章列表， type={}, userId={}", type, userId);
         ResultDto<List<ArticleDetail>> resultDto = new ResultDto<>();
         resultDto.setCode(ErrorEnum.SUCCESS.getCode());
         resultDto.setCodeMsg(ErrorEnum.SUCCESS.getDesc());
@@ -62,7 +62,7 @@ public class ArticleController {
         } else if (type == 2) {  //最近
             articleSearchDto.setOrderBy(" create_time desc");
         }
-        List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto);
+        List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto, userId);
         resultDto.setData(articleDetailList);
         logger.info("Result 获取文章列表值， resultDto={}", JSON.toJSONString(resultDto));
         return JSON.toJSONString(resultDto);

@@ -23,6 +23,10 @@ public class CommentLink {
 
     private List<CommentLink> childCommentList;
 
+    private UserInfo criticismUserInfo;
+
+    private UserInfo authorUserInfo;
+
     public CommentLink(Long id, Long articleId, Long criticismId, Long authorId, Long parentId, String originalContent, String criticismContent, Date createTime) {
         this.id = id;
         this.articleId = articleId;
@@ -110,4 +114,19 @@ public class CommentLink {
         this.childCommentList = childCommentList;
     }
 
+    public UserInfo getCriticismUserInfo() {
+        return criticismUserInfo;
+    }
+
+    public void setCriticismUserInfo(UserInfo criticismUserInfo) {
+        this.criticismUserInfo = criticismUserInfo;
+    }
+
+    public UserInfo getAuthorUserInfo() {
+        return authorUserInfo;
+    }
+
+    public void setAuthorUserInfo(UserInfo authorUserInfo) {
+        this.authorUserInfo = authorUserInfo;
+    }
 }

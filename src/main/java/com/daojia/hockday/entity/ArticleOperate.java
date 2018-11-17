@@ -24,9 +24,17 @@ public class ArticleOperate {
         this.operateValue = operateValue;
     }
 
-    public ArticleOperate() {
-        super();
+    public ArticleOperate(Long id, Long articleId, Long userId, Integer operateType, Date operateTime) {
+        this.id = id;
+        this.articleId = articleId;
+        this.userId = userId;
+        this.operateType = operateType;
+        this.operateTime = operateTime;
     }
+
+    public ArticleOperate() {
+    }
+
 
     public Long getId() {
         return id;

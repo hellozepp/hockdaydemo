@@ -189,9 +189,7 @@
   <update id="subOperationArticle" parameterType="java.util.Map" >
     update t_hockday_article_detail
     <if test="operationType == 1">
-      <if test="operationValue > 0">
         set like_num = like_num - 1
-      </if>
     </if>
     where  id = #{articleId,jdbcType=BIGINT}
   </update>

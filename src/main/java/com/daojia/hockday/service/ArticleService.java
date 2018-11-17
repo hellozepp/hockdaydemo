@@ -29,7 +29,7 @@ public interface ArticleService {
      * 获取文章列表
      * @param articleSearchDto 文章实体
      */
-    default List<ArticleDetail> getArticleDetailList(ArticleSearchDto articleSearchDto) {return new ArrayList<>();}
+    default List<ArticleDetail> getArticleDetailList(ArticleSearchDto articleSearchDto, Long userId) {return new ArrayList<>();}
 
 
 
