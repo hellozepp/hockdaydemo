@@ -21,13 +21,12 @@ import java.util.UUID;
 public class LoginController {
 
 
-
     @Resource
     private UserInfoMapper userInfoMapper;
 
     @GetMapping(value = "/login")
     public String login(String token) {
-            ResultDto<UserInfo> resultDto = new ResultDto<>();
+        ResultDto<UserInfo> resultDto = new ResultDto<>();
         resultDto.setParamError();
         if (StringUtils.isEmpty(token)) {
             return JSON.toJSONString(resultDto);
@@ -52,20 +51,20 @@ public class LoginController {
     }
 
     String[] photeList = new String[]
-            {"https://images.djtest.cn/house/test/3d84b531f80ff3f7e41cf66be5b28e71.jpg" ,
-                    "https://images.djtest.cn/house/test/639109a854acbd59534396a717f4e6e6.jpg" ,
-                    "https://images.djtest.cn/house/test/8df285f9623d4842be0eb8003b997bbb.jpg" ,
-                    "https://images.djtest.cn/house/test/0a6d3d64c8a61b7b34ebbacc3eec91d9.jpg" ,
-                    "https://images.djtest.cn/house/test/da0abb043684f76e66b8adf896fee2b9.jpg" ,
-                    "https://images.djtest.cn/house/test/777eaf4e11b20a390de809b9a8bac26e.jpg" ,
-                    "https://images.djtest.cn/house/test/f4b3db3e78b704c7da5d92b67f7d5a9b.jpg" ,
-                    "https://images.djtest.cn/house/test/5527ba9389c284135d5d2a2f64d9b379.jpg" ,
-                    "https://images.djtest.cn/house/test/ff7fa72ac97ddfa8987534d725624027.jpg" ,
-                    "https://images.djtest.cn/house/test/8c4b4258d0371dad7c4c56b0025c565b.jpg" ,
-                    "https://images.djtest.cn/house/test/cca49d543c18d37a41dcdf041d56ce65.jpg" ,
-                    "https://images.djtest.cn/house/test/1739f09a3117552647c678b6ac1f402b.jpg" ,
+            {"https://images.djtest.cn/house/test/3d84b531f80ff3f7e41cf66be5b28e71.jpg",
+                    "https://images.djtest.cn/house/test/639109a854acbd59534396a717f4e6e6.jpg",
+                    "https://images.djtest.cn/house/test/8df285f9623d4842be0eb8003b997bbb.jpg",
+                    "https://images.djtest.cn/house/test/0a6d3d64c8a61b7b34ebbacc3eec91d9.jpg",
+                    "https://images.djtest.cn/house/test/da0abb043684f76e66b8adf896fee2b9.jpg",
+                    "https://images.djtest.cn/house/test/777eaf4e11b20a390de809b9a8bac26e.jpg",
+                    "https://images.djtest.cn/house/test/f4b3db3e78b704c7da5d92b67f7d5a9b.jpg",
+                    "https://images.djtest.cn/house/test/5527ba9389c284135d5d2a2f64d9b379.jpg",
+                    "https://images.djtest.cn/house/test/ff7fa72ac97ddfa8987534d725624027.jpg",
+                    "https://images.djtest.cn/house/test/8c4b4258d0371dad7c4c56b0025c565b.jpg",
+                    "https://images.djtest.cn/house/test/cca49d543c18d37a41dcdf041d56ce65.jpg",
+                    "https://images.djtest.cn/house/test/1739f09a3117552647c678b6ac1f402b.jpg",
                     "https://images.djtest.cn/house/test/cbe5c9cc734dbf2974d7e4764a4a1d85.jpg",
-            "https://images.djtest.cn/house/test/40da8373e92b199a6edf6afbc0e299d0.jpg",
+                    "https://images.djtest.cn/house/test/40da8373e92b199a6edf6afbc0e299d0.jpg",
                     "https://images.djtest.cn/house/test/bc4d0c1360a0c68c38fc2a5ae7472143.jpg",
                     "https://images.djtest.cn/house/test/26e9f21f4247b4f6bc1e570c7696cea0.jpg",
                     "https://images.djtest.cn/house/test/97fbc98afbb5057d3ad9783648b851b8.jpg",
@@ -86,7 +85,7 @@ public class LoginController {
                     "https://images.djtest.cn/house/test/35a932707f8bd1e10ac886528346de49.jpg",
                     "https://images.djtest.cn/house/test/442ce13bd0b4b2fb0b0c67bbb6ebc5b5.jpg",
                     "https://images.djtest.cn/house/test/cd6f0d98a7b79a3c50d4a684434cfbf0.jpg",
-                    "https://images.djtest.cn/house/test/0408d887794a052940d52ff87cb3f6af.jpg"            };
+                    "https://images.djtest.cn/house/test/0408d887794a052940d52ff87cb3f6af.jpg"};
 
 
 }

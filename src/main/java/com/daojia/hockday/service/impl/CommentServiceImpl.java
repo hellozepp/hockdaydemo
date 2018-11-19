@@ -69,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Integer saveComment(CommentLink commentLink) {
-        if(commentLink == null) {
+        if (commentLink == null) {
             return 0;
         }
         commentLink.setId(UniqueIDUtil.getUniqueID());
@@ -104,7 +104,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     private void setUserInfoWithComment(List<CommentLink> commentLinkList) {
-        if(!CollectionUtils.isEmpty(commentLinkList)) {
+        if (!CollectionUtils.isEmpty(commentLinkList)) {
             try {
                 commentLinkList.forEach(commentLink -> {
                     Long criticismId = commentLink.getCriticismId();
@@ -112,7 +112,7 @@ public class CommentServiceImpl implements CommentService {
                     UserInfo userInfo =
                             userInfoMapper.selectByPrimaryKey(criticismId);
                     commentLink.setCriticismUserInfo(userInfo);
-                    if(authorId != null && authorId != 0) {
+                    if (authorId != null && authorId != 0) {
                         UserInfo authorUserInfo =
                                 userInfoMapper.selectByPrimaryKey(authorId);
                         commentLink.setAuthorUserInfo(authorUserInfo);

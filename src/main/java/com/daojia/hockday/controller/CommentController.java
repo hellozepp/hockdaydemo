@@ -1,9 +1,6 @@
 package com.daojia.hockday.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.daojia.hockday.entity.ArticleDetail;
 import com.daojia.hockday.entity.ArticleOperate;
 import com.daojia.hockday.entity.CommentLink;
 import com.daojia.hockday.service.ArticleService;
@@ -11,10 +8,10 @@ import com.daojia.hockday.service.CommentService;
 import com.daojia.hockday.util.ResultDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author lei shuiyu

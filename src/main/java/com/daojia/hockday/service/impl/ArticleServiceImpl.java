@@ -65,7 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         //点赞状态 查询
         if (!CollectionUtils.isEmpty(articleList)) {
-            articleList.forEach(articleDetail ->  {
+            articleList.forEach(articleDetail -> {
                 articleDetail.setIfLiked(2);
                 articleDetail.setCreateTimeStr(dateFormat(articleDetail.getCreateTime()));
             });
@@ -149,10 +149,10 @@ public class ArticleServiceImpl implements ArticleService {
             long currentTime = System.currentTimeMillis();
             if ((currentTime - time) / (1000 * 60 * 60 * 24) > 0) {
                 long day = (currentTime - time) / (1000 * 60 * 60 * 24);
-                if(day >= 7) {
+                if (day >= 7) {
                     resultStr = simpleDateFormat.format(date);
                 } else {
-                resultStr = String.valueOf(day + "天前");
+                    resultStr = String.valueOf(day + "天前");
                 }
             } else if ((currentTime - time) / (1000 * 60 * 60) > 0) {
                 long hour = (currentTime - time) / (1000 * 60 * 60);

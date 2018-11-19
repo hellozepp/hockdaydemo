@@ -27,12 +27,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Baidu 文件api  接口-->
-        <dependency>
-            <groupId>com.baidu.aip</groupId>
-            <artifactId>java-sdk</artifactId>
-            <version>4.8.0</version>
-        </dependency>
 
         <!-- servlet3 -->
         <dependency>
@@ -159,18 +153,26 @@
             <artifactId>java-sdk</artifactId>
             <version>4.8.0</version>
         </dependency>
-        <!--jave格式转换库-->
+
+        <!--apache.commons/commons-lang3 -->
         <dependency>
-            <groupId>ws.schild</groupId>
-            <artifactId>jave-all-deps</artifactId>
-            <version>2.4.4</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
         </dependency>
-        <dependency>
-            <groupId>org.kie.modules</groupId>
-            <artifactId>org-apache-commons-lang3</artifactId>
-            <version>6.5.0.Final</version>
-            <type>pom</type>
-        </dependency>
+
+        <!--    &lt;!&ndash;jave格式转换库&ndash;&gt;
+            <dependency>
+                <groupId>ws.schild</groupId>
+                <artifactId>jave-all-deps</artifactId>
+                <version>2.4.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.modules</groupId>
+                <artifactId>org-apache-commons-lang3</artifactId>
+                <version>6.5.0.Final</version>
+                <type>pom</type>
+            </dependency>-->
     </dependencies>
 
     <build>
