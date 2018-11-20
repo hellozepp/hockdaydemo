@@ -38,8 +38,8 @@ public class FileUpLoadController {
         ModelAndView mo = new ModelAndView();
         if (file != null) {
             String originalFilename = file.getOriginalFilename();
-            String newFileName = "";
-            String distName = "";
+            String newFileName;
+            String distName;
             if (StringUtils.isBlank(originalFilename) || originalFilename.lastIndexOf(".") < 0) {
                 logger.error("[upload]文件名或文件后缀不能为空!");
                 resultDto.setCode(ErrorEnum.ERROR.getCode());
@@ -103,7 +103,9 @@ public class FileUpLoadController {
             resultDto.setCode(ErrorEnum.ERROR.getCode());
             resultDto.setCodeMsg("[upload] 未上传语音文件!");
         }
-        return JSON.toJSONString(resultDto);
+        String s = JSON.toJSONString(resultDto);
+        logger.info("[upload]请求数据完成,res:" + s);
+        return s;
     }
 
     public JSONObject callAipSpeech(File source, File dist) {
