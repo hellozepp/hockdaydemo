@@ -7,17 +7,17 @@ import java.io.File;
 public class ConvertAudio {
     public static void audioToWav(File source, File target) {
         AudioAttributes audio = new AudioAttributes();
-        audio.setCodec("libmp3lame");
-        audio.setBitRate(128000);
-        audio.setChannels(2);
-        audio.setSamplingRate(44100);
+        audio.setCodec("pcm_s16le");
+        audio.setBitRate(16000);
+        audio.setChannels(1);
+        audio.setSamplingRate(16000);
         EncodingAttributes attrs = new EncodingAttributes();
-        attrs.setFormat("wav");
+        attrs.setFormat("s16le");
         attrs.setAudioAttributes(audio);
         Encoder encoder = new Encoder(new FFMPEGLocator() {
             @Override
             protected String getFFMPEGExecutablePath() {
-                return "/usr/local/bin/ffmpeg";
+                return "/usr/bin/ffmpeg";
             }
         });
         try {

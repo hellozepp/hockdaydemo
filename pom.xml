@@ -172,6 +172,12 @@
             <artifactId>org-apache-commons-lang3</artifactId>
             <version>6.5.0.Final</version>
             <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-lang3</artifactId>
+                    <groupId>org.apache.commons</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

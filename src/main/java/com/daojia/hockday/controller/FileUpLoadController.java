@@ -48,9 +48,9 @@ public class FileUpLoadController {
                 String endStr = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
                 String nameCut = originalFilename.substring(0, originalFilename.lastIndexOf(".")) + "_" + DateUtil.simple4(new Date());
                 newFileName = nameCut + "." + endStr;
-                distName = nameCut + ".wav";
+                distName = nameCut + ".pcm";
 
-                mo.addObject("filename", newFileName);
+                mo.addObject("filename", distName);
                 mo.addObject("size", file.getSize() / (1024.0 * 1024) + "M");
                 String systemRealPath = "static/file/";
                 File path = new File(systemRealPath);
@@ -106,29 +106,14 @@ public class FileUpLoadController {
         return JSON.toJSONString(resultDto);
     }
 
-    private JSONObject callAipSpeech(File source, File dist) {
-        // 初始化一个AipSpeech
-        AipSpeech client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
-        // 可选：设置网络连接参数
-        client.setConnectionTimeoutInMillis(2000);
-        client.setSocketTimeoutInMillis(60000);
-
-        // 可选：设置代理服务器地址, http和socket二选一，或者均不设置
-        int proxy_port = 28085;
-//        client.setHttpProxy("proxy_host", proxy_port);  // 设置http代理
-//        client.setSocketProxy("proxy_host", proxy_port);  // 设置socket代理
-
-        // 可选：设置log4j日志输出格式，若不设置，则使用默认配置
-        // 也可以直接通过jvm启动参数设置此环境变量
-//        System.setProperty("aip.log4j.conf", "log4j.properties");
-
-        // 调用接口
+    public JSONObject callAipSpeech(File source, File dist) {
         ConvertAudio.audioToWav(source, dist);
         try {
             InputStream input = new FileInputStream(dist);
             byte[] byt = new byte[input.available()];
             input.read(byt);
-            JSONObject res = client.asr(byt, "wav", 8000, null);
+            // 初始化一个AipSpeech
+            JSONObject res = apiSpeech(byt);
             logger.info("[callAipSpeech] res:" + res.toString());
             return res;
         } catch (FileNotFoundException e) {
@@ -140,6 +125,17 @@ public class FileUpLoadController {
         } catch (Exception e) {
             return new JSONObject();
         }
+    }
+
+    public static JSONObject apiSpeech(byte[] byt) {
+        AipSpeech client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
+        client.setConnectionTimeoutInMillis(2000);
+        client.setSocketTimeoutInMillis(60000);
+        JSONObject res = client.asr(byt, "pcm", 16000, null);
+        if (res == null) {
+            return new JSONObject();
+        }
+        return res;
     }
 
 }
