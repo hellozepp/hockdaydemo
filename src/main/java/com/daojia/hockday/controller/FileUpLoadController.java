@@ -2,8 +2,10 @@ package com.daojia.hockday.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baidu.aip.speech.AipSpeech;
+import com.daojia.hockday.entity.ArticleDetail;
 import com.daojia.hockday.enums.ErrorEnum;
-import com.daojia.hockday.util.M4aToWavUtil;
+import com.daojia.hockday.util.ConvertAudio;
+import com.daojia.hockday.util.DateUtil;
 import com.daojia.hockday.util.ResultDto;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
-import java.util.UUID;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author by Dawei on 2018/11/11.
@@ -26,105 +30,105 @@ public class FileUpLoadController {
     private static final String APP_ID = "14759966";
     private static final String API_KEY = "GXBETGK8ZMoc7QUOEBlGKrZW";
     private static final String SECRET_KEY = "GSyzff82Iq83qyjde3bkAVDaDXa3Zh9D";
-
-
-    // 初始化一个AipSpeech
-    private AipSpeech aipSpeech = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
-
-    // 可选：设置网络连接参数
-    {
-        aipSpeech.setConnectionTimeoutInMillis(2000);
-        aipSpeech.setSocketTimeoutInMillis(60000);
-    }
-
     private static final Logger logger = LoggerFactory.getLogger(FileUpLoadController.class);
 
     @PostMapping(value = "/upload", produces = "multipart/form-data")
     public String upload(@RequestParam(value = "file", required = false) CommonsMultipartFile file) {
-        logger.info(" Upload file ........");
-        ResultDto<String> resultDto = new ResultDto<>();
-
-        if (file == null) {
-            logger.info("[upload]未上传语音文件!");
-            resultDto.setParamError();
-            resultDto.setCodeMsg("[upload] 未上传语音文件!");
-        }
+        ResultDto<List<ArticleDetail>> resultDto = new ResultDto<>();
+        ModelAndView mo = new ModelAndView();
         if (file != null) {
-            String originalFileName = file.getOriginalFilename();
-            logger.info("originalFileName is {}", originalFileName);
-
-            String distName;
-            if (StringUtils.isBlank(originalFileName) || !originalFileName.contains(".")) {
+            String originalFilename = file.getOriginalFilename();
+            String newFileName = "";
+            String distName = "";
+            if (StringUtils.isBlank(originalFilename) || originalFilename.lastIndexOf(".") < 0) {
                 logger.error("[upload]文件名或文件后缀不能为空!");
                 resultDto.setCode(ErrorEnum.ERROR.getCode());
                 resultDto.setCodeMsg("文件名或文件后缀不能为空!");
             } else {
-                distName = UUID.randomUUID().toString() + ".wav";
-                String systemRealPath = "/opt/web/hockday-demo/static/file/";
+                String endStr = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+                String nameCut = originalFilename.substring(0, originalFilename.lastIndexOf(".")) + "_" + DateUtil.simple4(new Date());
+                newFileName = nameCut + "." + endStr;
+                distName = nameCut + ".wav";
+
+                mo.addObject("filename", newFileName);
+                mo.addObject("size", file.getSize() / (1024.0 * 1024) + "M");
+                String systemRealPath = "static/file/";
                 File path = new File(systemRealPath);
                 if (!path.exists()) {
                     boolean mkdirs = path.mkdirs();
                     logger.info("path:" + path + ", result : mkdirs={}", mkdirs);
                 }
-                File upFile = new File(systemRealPath + originalFileName);
+                File upFile = new File(systemRealPath + newFileName);
                 try {
                     file.transferTo(upFile);
-                    logger.info("转储语音文件成功---");
-                } catch (IOException e) {
-                    logger.error("转储语音文件异常------ e=", e);
-                }
-                try {
-                    //进行格式转换
-                    M4aToWavUtil.doTurnType(systemRealPath + originalFileName, systemRealPath + distName);
-                    //调用转化接口
-                    JSONObject jsonObject = callBaiduApi(new File(systemRealPath + distName));
-                    logger.info("调取结果， jsonObject={}", jsonObject.toString());
+                    JSONObject jsonObject = callAipSpeech(upFile, new File(systemRealPath + distName));
                     resultDto.setCode(ErrorEnum.ERROR.getCode());
-                    String resultMag = null;
                     if (jsonObject.has("error_msg")) {
-                        resultMag = (String) jsonObject.get("error_msg");
+                        resultDto.setCodeMsg((String) jsonObject.get("error_msg"));
                     }
                     if (jsonObject.has("err_msg")) {
-                        resultMag = (String) jsonObject.get("err_msg");
+                        resultDto.setCodeMsg((String) jsonObject.get("err_msg")); //success.
                     }
                     if (jsonObject.has("error_code")) {
-                        resultMag = (String) jsonObject.get("error_code");
+                        resultDto.setCodeMsg((String) jsonObject.get("error_code"));
                     }
                     if (jsonObject.has("err_code")) {
-                        resultMag = (String) jsonObject.get("err_code");
+                        resultDto.setCodeMsg((String) jsonObject.get("err_code")); //0
                     }
-                    if (resultMag != null) {
-                        resultDto.setCodeMsg(resultMag);
-                    }
-                    StringBuilder msgResult = new StringBuilder();
+                    StringBuilder msg = new StringBuilder();
+                    boolean first = true;
                     if (jsonObject.has("result")) {
                         JSONArray result = (JSONArray) jsonObject.get("result");
                         for (Object o : result) {
                             if (o != null && StringUtils.isNotBlank((String) o)) {
-                                msgResult.append(o).append(",");
+                                if (first) {
+                                    first = false;
+                                    msg = new StringBuilder((String) o);
+                                    continue;
+                                }
+                                msg.append(",").append(o);
                             }
                         }
-                        if (StringUtils.isNotBlank(msgResult)) {
-                            resultDto.setData(msgResult.substring(0, msgResult.length() - 1));
-                            resultDto.setCode(ErrorEnum.SUCCESS.getCode());
-                        }
+                        resultDto.setCodeMsg(msg.toString());
+                        resultDto.setCode(ErrorEnum.SUCCESS.getCode());
                     }
-                } catch (Exception e) {
-                    logger.info("格式转化 或语音接口 方法失败 e=", e);
+                } catch (IOException e) {
+                    logger.error("[upload] 创建文件流出错!e:{}", e);
+                    resultDto.setCode(ErrorEnum.ERROR.getCode());
+                    resultDto.setCodeMsg("创建文件流出错!");
                 }
             }
+        } else {
+            logger.error("[upload]未上传语音文件!");
+            resultDto.setCode(ErrorEnum.ERROR.getCode());
+            resultDto.setCodeMsg("[upload] 未上传语音文件!");
         }
         return JSON.toJSONString(resultDto);
     }
 
     private JSONObject callAipSpeech(File source, File dist) {
+        // 初始化一个AipSpeech
+        AipSpeech client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
+        // 可选：设置网络连接参数
+        client.setConnectionTimeoutInMillis(2000);
+        client.setSocketTimeoutInMillis(60000);
+
+        // 可选：设置代理服务器地址, http和socket二选一，或者均不设置
+        int proxy_port = 28085;
+//        client.setHttpProxy("proxy_host", proxy_port);  // 设置http代理
+//        client.setSocketProxy("proxy_host", proxy_port);  // 设置socket代理
+
+        // 可选：设置log4j日志输出格式，若不设置，则使用默认配置
+        // 也可以直接通过jvm启动参数设置此环境变量
+//        System.setProperty("aip.log4j.conf", "log4j.properties");
+
         // 调用接口
-        //ConvertAudiso.audioToWav(source, dist);
+        ConvertAudio.audioToWav(source, dist);
         try {
             InputStream input = new FileInputStream(dist);
             byte[] byt = new byte[input.available()];
             input.read(byt);
-            JSONObject res = aipSpeech.asr(byt, "wav", 16000, null);
+            JSONObject res = client.asr(byt, "wav", 8000, null);
             logger.info("[callAipSpeech] res:" + res.toString());
             return res;
         } catch (FileNotFoundException e) {
@@ -136,34 +140,6 @@ public class FileUpLoadController {
         } catch (Exception e) {
             return new JSONObject();
         }
-    }
-
-
-    private JSONObject callBaiduApi(File targetFile) {
-        if (aipSpeech == null) {
-            aipSpeech = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
-        }
-        JSONObject res = null;
-        InputStream input = null;
-        try {
-            input = new FileInputStream(targetFile);
-            byte[] byt = new byte[input.available()];
-            input.read(byt);
-            res = aipSpeech.asr(byt, "wav", 16000, null);
-            logger.info("[callAipSpeech] res:" + res.toString());
-        } catch (Exception e) {
-            logger.error("api failed，e=", e);
-        } finally {
-            try {
-                if (input != null) {
-                    input.close();
-                }
-            } catch (IOException e) {
-                logger.info("关闭文件流异常 e=", e);
-            }
-        }
-
-        return res;
     }
 
 }

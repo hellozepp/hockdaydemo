@@ -696,4 +696,34 @@ public class DateUtil {
 
     }
 
+
+    public static String dateFormat(Date date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String resultStr = "刚刚";
+        if (date != null) {
+            long time = date.getTime();
+            long currentTime = System.currentTimeMillis();
+            if ((currentTime - time) / (1000 * 60 * 60 * 24) > 0) {
+                long day = (currentTime - time) / (1000 * 60 * 60 * 24);
+                if (day >= 7) {
+                    resultStr = simpleDateFormat.format(date);
+                } else {
+                    resultStr = String.valueOf(day + "天前");
+                }
+            } else if ((currentTime - time) / (1000 * 60 * 60) > 0) {
+                long hour = (currentTime - time) / (1000 * 60 * 60);
+                resultStr = String.valueOf(hour + "小时前");
+            } else if ((currentTime - time) / (1000 * 60) > 0) {
+                long min = (currentTime - time) / (1000 * 60 * 60);
+
+                resultStr = String.valueOf(min + "分前");
+            } else if ((currentTime - time) / (1000) > 0) {
+                long second = (currentTime - time) / (1000);
+                resultStr = String.valueOf(second + "秒前");
+            }
+        }
+        return resultStr;
+    }
+
 }

@@ -27,6 +27,8 @@ public class CommentLink {
 
     private UserInfo authorUserInfo;
 
+    private String createTimeStr;
+
     public CommentLink(Long id, Long articleId, Long criticismId, Long authorId, Long parentId, String originalContent, String criticismContent, Date createTime) {
         this.id = id;
         this.articleId = articleId;
@@ -128,5 +130,13 @@ public class CommentLink {
 
     public void setAuthorUserInfo(UserInfo authorUserInfo) {
         this.authorUserInfo = authorUserInfo;
+    }
+
+    public String getCreateTimeStr() {
+        return createTimeStr;
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
     }
 }

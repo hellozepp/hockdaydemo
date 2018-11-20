@@ -6,6 +6,7 @@ import com.daojia.hockday.entity.UserInfo;
 import com.daojia.hockday.mapper.CommentLinkMapper;
 import com.daojia.hockday.mapper.UserInfoMapper;
 import com.daojia.hockday.service.CommentService;
+import com.daojia.hockday.util.DateUtil;
 import com.daojia.hockday.util.UniqueIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,6 +108,7 @@ public class CommentServiceImpl implements CommentService {
         if (!CollectionUtils.isEmpty(commentLinkList)) {
             try {
                 commentLinkList.forEach(commentLink -> {
+                    commentLink.setCreateTimeStr(DateUtil.dateFormat(commentLink.getCreateTime()));
                     Long criticismId = commentLink.getCriticismId();
                     Long authorId = commentLink.getAuthorId();
                     UserInfo userInfo =
