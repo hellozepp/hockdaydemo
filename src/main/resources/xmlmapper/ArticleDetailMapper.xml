@@ -167,6 +167,9 @@
     SELECT
     <include refid="Base_Column_List" />
     FROM t_hockday_article_detail
+    <if test="authorId != null">
+      authorId = #{authorId,jdbcType=BIGINT}
+    </if>
     <if test="orderBy != null and orderBy != ''">
       ORDER BY  #{orderBy}
     </if>

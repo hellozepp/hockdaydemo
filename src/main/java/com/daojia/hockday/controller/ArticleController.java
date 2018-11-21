@@ -153,6 +153,30 @@ public class ArticleController {
         return JSON.toJSONString(resultDto);
     }
 
+
+    /**
+     * 获取 我的发布的列表
+     */
+    @GetMapping(value = "/get/my/article/list")
+    public String getMyArticleList(Long userId) {
+        logger.info("获取文章列表 userId={}", userId);
+
+        ResultDto<List<ArticleDetail>> resultDto = new ResultDto<>();
+        if (userId == null) {
+            resultDto.setParamError();
+        } else {
+            resultDto.setCode(ErrorEnum.SUCCESS.getCode());
+            resultDto.setCodeMsg(ErrorEnum.SUCCESS.getDesc());
+            ArticleSearchDto searchDto = new ArticleSearchDto();
+            searchDto.setAuthorId(userId);
+            List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(searchDto, userId);
+            resultDto.setData(articleDetailList);
+        }
+        logger.info("Result 获取我的发布 文章列表值， resultDto={}", JSON.toJSONString(resultDto));
+        return JSON.toJSONString(resultDto);
+    }
+
+
 }
 
 
