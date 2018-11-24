@@ -171,7 +171,7 @@ public class ArticleController {
         articleOperate.setUserId(userId);
         articleOperate.setOperateValue(operationValue);
         articleOperate.setOperateTime(new Date());
-
+// TODO: 2018/11/25 张琳  
         Integer integer = articleService.operationArticle(articleOperate);
         resultDto.setSuccess();
         resultDto.setData(integer);
