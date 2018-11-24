@@ -161,6 +161,13 @@
             <version>3.4</version>
         </dependency>
 
+        <!-- httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+
         <!--jave格式转换库-->
         <dependency>
             <groupId>ws.schild</groupId>

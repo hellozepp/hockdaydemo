@@ -173,7 +173,7 @@ public class DateUtil {
      * 获取输入日期月份的相差日期
      *
      * @param dt
-     * @param idiff
+     * @param idiff wfzc055780-
      * @return
      */
     public static Date getDiffMon(Date dt, int diffMon) {
