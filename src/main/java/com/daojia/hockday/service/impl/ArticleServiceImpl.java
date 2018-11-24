@@ -1,5 +1,6 @@
 package com.daojia.hockday.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.daojia.hockday.entity.ArticleDetail;
 import com.daojia.hockday.entity.ArticleOperate;
 import com.daojia.hockday.entity.ArticleSearchDto;
@@ -66,6 +67,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (articleSearchDto == null) {
             return articleListTemp;
         }
+        logger.info("To 获取文章列表， articleSearchDto={}， userId={}", JSON.toJSONString(articleSearchDto), userId);
         articleListTemp = articleDetailMapper.getArticleList(articleSearchDto);
         List<ArticleDetail> articleList = new ArrayList<>();
         //踢掉不可见
@@ -84,7 +86,6 @@ public class ArticleServiceImpl implements ArticleService {
                 }
             }
         }
-
 
         if (!CollectionUtils.isEmpty(articleList)) {
             articleList.forEach(articleDetail -> {
@@ -115,6 +116,7 @@ public class ArticleServiceImpl implements ArticleService {
                 }
             }
         }
+        logger.info("文章列表，articleList={}", JSON.toJSONString(articleList));
         return articleList;
     }
 
@@ -163,6 +165,8 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDetail getArticleDetailById(Long articleId) {
         ArticleDetail articleDetail = articleDetailMapper.selectByPrimaryKey(articleId);
         articleDetail.setCreateTimeStr(DateUtil.dateFormat(articleDetail.getCreateTime()));
+
+
         return articleDetail;
     }
 

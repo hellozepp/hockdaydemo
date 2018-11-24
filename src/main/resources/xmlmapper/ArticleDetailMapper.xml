@@ -194,6 +194,9 @@
     <if test="authorId != null">
      where author_id = #{authorId,jdbcType=BIGINT}
     </if>
+    <if test="id != null">
+      where id = #{id,jdbcType=BIGINT}
+    </if>
 
     <if test="orderBy != null and orderBy != ''">
       ORDER BY  #{orderBy}

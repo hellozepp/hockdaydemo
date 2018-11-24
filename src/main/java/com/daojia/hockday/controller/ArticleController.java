@@ -22,6 +22,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -187,15 +188,22 @@ public class ArticleController {
      * @param articleId 文章ID
      */
     @GetMapping(value = "/get/article/detail")
-    public String getArticleById(Long articleId) {
-        logger.info("获取文章详情和相应的评论信息，articleId={} ", articleId);
+    public String getArticleById(Long articleId, Long userId) {
+        logger.info("获取文章详情和相应的评论信息，articleId={} userId={}", articleId, userId);
         ResultDto<Map<String, Object>> resultDto = new ResultDto<>();
         resultDto.setParamError();
         if (articleId == null) {
             return JSON.toJSONString(resultDto);
         }
         resultDto.setSuccess();
-        ArticleDetail articleDetailById = articleService.getArticleDetailById(articleId);
+
+        ArticleDetail articleDetailById = null;
+        ArticleSearchDto articleSearchDto = new ArticleSearchDto();
+        articleSearchDto.setId(articleId);
+        List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto, userId);
+        if(!CollectionUtils.isEmpty(articleDetailList)) {
+            articleDetailById = articleDetailList.get(0);
+        }
         logger.info("文章结果， articleDetailById={}", JSON.toJSONString(articleDetailById));
         List<CommentLink> debutCommentLink = commentService.getDebutCommentLink(articleId);
         logger.info("评论内容， debutCommentLink={}", JSON.toJSONString(debutCommentLink));

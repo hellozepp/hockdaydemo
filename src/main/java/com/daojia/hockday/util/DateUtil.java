@@ -6,6 +6,8 @@ package com.daojia.hockday.util;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,6 +22,8 @@ import java.util.Date;
  * @version $Id: DateUtil.java, v 0.1 2012-5-29 下午4:47:31 gaojingjun Exp $
  */
 public class DateUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
     /**
      * 完整时间 yyyy-MM-dd HH:mm:ss
@@ -710,7 +714,7 @@ public class DateUtil {
             long hour = (currentTime - time) / (1000 * 60 * 60);
             long min = (currentTime - time) / (1000 * 60);
             long second = (currentTime - time) / (1000);
-
+            logger.info("#####时间， day={}, hour={}, min={}, second={}", day, hour, min, second);
             if (day >= 7) {
                 resultStr = simpleDateFormat.format(date);
             } else if (day > 0) {
