@@ -170,4 +170,19 @@ public class ArticleServiceImpl implements ArticleService {
         return articleDetail;
     }
 
+
+    @Override
+    public void updateState(Long id){
+        articleDetailMapper.updateState(id);
+    }
+
+    @Override
+    public List<ArticleDetail> getAllTicle(){
+        List<ArticleDetail>  list =articleDetailMapper.getAll();
+        return list;
+    }
+
+
+
+
 }

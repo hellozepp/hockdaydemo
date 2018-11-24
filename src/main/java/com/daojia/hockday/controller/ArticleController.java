@@ -7,6 +7,7 @@ import com.daojia.hockday.mapper.UserInfoMapper;
 import com.daojia.hockday.service.ArticleService;
 import com.daojia.hockday.service.CommentService;
 import com.daojia.hockday.util.EncryptUtil;
+import com.daojia.hockday.util.RequestUtil;
 import com.daojia.hockday.util.ResultDto;
 import com.daojia.hockday.util.UniqueIDUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -25,10 +26,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -40,10 +48,8 @@ public class ArticleController {
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
     @Resource
     private ArticleService articleService;
-
     @Resource
     private CommentService commentService;
-
     @Resource
     private UserInfoMapper userInfoMapper;
 
@@ -79,6 +85,7 @@ public class ArticleController {
         logger.info("Result 获取文章列表值， resultDto={}", JSON.toJSONString(resultDto));
         return JSON.toJSONString(resultDto);
     }
+
 
     /**
      * 添加发布
@@ -119,8 +126,8 @@ public class ArticleController {
                 HttpEntity entity = response.getEntity();
                 String content = EntityUtils.toString(entity, "utf-8");
                 logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>.Response is content= {}", content);
-                if(StringUtils.isNotBlank(content)) {
-                    if("2".equals(content)) {
+                if (StringUtils.isNotBlank(content)) {
+                    if ("2".equals(content)) {
                         articleDetail.setCheckNo(-1);
                     } else {
                         articleDetail.setCheckNo(1);
@@ -201,7 +208,7 @@ public class ArticleController {
         ArticleSearchDto articleSearchDto = new ArticleSearchDto();
         articleSearchDto.setId(articleId);
         List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto, userId);
-        if(!CollectionUtils.isEmpty(articleDetailList)) {
+        if (!CollectionUtils.isEmpty(articleDetailList)) {
             articleDetailById = articleDetailList.get(0);
         }
         logger.info("文章结果， articleDetailById={}", JSON.toJSONString(articleDetailById));
@@ -237,28 +244,46 @@ public class ArticleController {
         logger.info("Result 获取我的发布 文章列表值， resultDto={}", JSON.toJSONString(resultDto));
         return JSON.toJSONString(resultDto);
     }
+
+
+    /**
+     * 得到评论
+     **/
+    @GetMapping(value = "/get/comment")
+    public String getComment() {
+        List<ArticleDetail> allComment = articleService.getAllTicle();
+        List<ShowContent> va = new LinkedList<>();
+        PageList<ShowContent> pageList = new PageList<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+        for (ArticleDetail article : allComment) {
+            ShowContent content = new ShowContent();
+            content.setId(article.getId().intValue());
+            content.setContent(article.getArticleContent());
+            content.setLevel("二级");
+            content.setPublicTime(formatter.format(article.getCreateTime()));
+            content.setLike(article.getLikeNum());
+            content.setComments(article.getCommentNum());
+            content.setEmotional(RequestUtil.doPost(article.getArticleContent()));
+            va.add(content);
+        }
+        pageList.setList(va);
+        pageList.setAmount(100);
+        pageList.setPage(1);
+        pageList.setPageSize(10);
+        return JSON.toJSONString(pageList);
+    }
+
+
+    /**
+     * 更新状态
+     **/
+    @GetMapping(value = "/update/state")
+    public String update(Long articleId) {
+        System.out.println("xxxxxxxxxxxxxxxxxxxxxx");
+        articleService.updateState(articleId);
+        System.out.println(articleId);
+        return "xx";
+    }
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
