@@ -72,7 +72,7 @@
     where md5_key = #{md5Key,jdbcType=VARCHAR}
   </select>
 
-  <select id="getCountUser">
+  <select id="getCountUser" parameterType="java.lang.Integer">
     select
     count(*)
     from t_hockday_article_user_info
