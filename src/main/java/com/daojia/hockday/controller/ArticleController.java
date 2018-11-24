@@ -7,19 +7,10 @@ import com.daojia.hockday.mapper.UserInfoMapper;
 import com.daojia.hockday.service.ArticleService;
 import com.daojia.hockday.service.CommentService;
 import com.daojia.hockday.util.EncryptUtil;
+import com.daojia.hockday.util.RequestUtil;
 import com.daojia.hockday.util.ResultDto;
 import com.daojia.hockday.util.UniqueIDUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -28,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -53,7 +44,7 @@ public class ArticleController {
      * @param type 列表类型 1:最新 2：最热
      */
     @GetMapping(value = "/get/article/list")
-    public String getArticleList(Integer type, Long userId, Integer pageNo,Integer pageSize) {
+    public String getArticleList(Integer type, Long userId, Integer pageNo, Integer pageSize) {
         logger.info("获取文章列表， type={}, userId={}", type, userId);
         if (pageNo == null || pageNo < 1) {
             pageNo = 0;
@@ -71,10 +62,10 @@ public class ArticleController {
         ArticleSearchDto articleSearchDto = new ArticleSearchDto();
         if (type.equals(1)) {  //最新
             articleSearchDto.setOrderBy(" create_time desc");
-        }else if (type.equals(2) ) { /* 最热 */
+        } else if (type.equals(2)) { /* 最热 */
             articleSearchDto.setOrderBy(" like_num desc");
         }
-        articleSearchDto.setPage(pageNo*pageSize);
+        articleSearchDto.setPage(pageNo * pageSize);
         articleSearchDto.setPageSize(pageSize);
 
         List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto, userId);
@@ -142,10 +133,10 @@ public class ArticleController {
             set.add("贩毒");
             set.add("套现");
             set.add("美立方");
-             articleDetail.setCheckNo(1);
+            articleDetail.setCheckNo(1);
             for (String s : set) {
-                if (articleContent.contains(s)){
-                     articleDetail.setCheckNo(-1);
+                if (articleContent.contains(s)) {
+                    articleDetail.setCheckNo(-1);
                 }
             }
             Integer integer = articleService.addArticleDetail(articleDetail);
@@ -207,7 +198,7 @@ public class ArticleController {
         ArticleSearchDto articleSearchDto = new ArticleSearchDto();
         articleSearchDto.setId(articleId);
         List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto, userId);
-        if(!CollectionUtils.isEmpty(articleDetailList)) {
+        if (!CollectionUtils.isEmpty(articleDetailList)) {
             articleDetailById = articleDetailList.get(0);
         }
         logger.info("文章结果， articleDetailById={}", JSON.toJSONString(articleDetailById));
