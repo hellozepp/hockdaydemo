@@ -50,30 +50,33 @@ public class ArticleController {
     /**
      * 获取 发布的列表
      *
-     * @param type 列表类型 1:最热 2：最新
+     * @param type 列表类型 1:最新 2：最热
      */
     @GetMapping(value = "/get/article/list")
-    public String getArticleList(Integer type, Long userId, Integer pageNo) {
+    public String getArticleList(Integer type, Long userId, Integer pageNo,Integer pageSize) {
         logger.info("获取文章列表， type={}, userId={}", type, userId);
         if (pageNo == null || pageNo < 1) {
             pageNo = 0;
+        }
+        if (pageSize == null || pageSize < 1) {
+            pageSize = 5;
         }
         ResultDto<List<ArticleDetail>> resultDto = new ResultDto<>();
         resultDto.setCode(ErrorEnum.SUCCESS.getCode());
         resultDto.setCodeMsg(ErrorEnum.SUCCESS.getDesc());
         if (type == null) {
-            resultDto.setCode(ErrorEnum.ERROR_PARAM.getCode());
-            resultDto.setCodeMsg(ErrorEnum.ERROR_PARAM.getDesc());
-            return JSON.toJSONString(resultDto);
+            type = 1;
         }
-        /* 最热 */
+
         ArticleSearchDto articleSearchDto = new ArticleSearchDto();
-        if (type == 2) {
-            articleSearchDto.setOrderBy(" like_num desc");
-        } else if (type == 1) {  //最近
+        if (type.equals(1)) {  //最新
             articleSearchDto.setOrderBy(" create_time desc");
+        }else if (type.equals(2) ) { /* 最热 */
+            articleSearchDto.setOrderBy(" like_num desc");
         }
-        articleSearchDto.setPage(pageNo * 5);
+        articleSearchDto.setPage(pageNo*pageSize);
+        articleSearchDto.setPageSize(pageSize);
+
         List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto, userId);
         resultDto.setData(articleDetailList);
         logger.info("Result 获取文章列表值， resultDto={}", JSON.toJSONString(resultDto));
@@ -104,42 +107,45 @@ public class ArticleController {
             articleDetail.setCheckNo(1);
 
 
-            String urlPath = "http://dmatrix-218.djtest.cn/api/dmatrix/comment/issensitive";
-            //String urlPath = "http://127.0.0.1:8080/check";
-            CloseableHttpClient httpClient = HttpClients.createDefault();
-
-            List<NameValuePair> nameValuePairList = new ArrayList<>();
-            BasicNameValuePair basicNameValuePair1 = new BasicNameValuePair("articleContent", articleContent);
-            nameValuePairList.add(basicNameValuePair1);
-            try {
-                UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairList, Consts.UTF_8);
-                String params = EntityUtils.toString(encodedFormEntity);
-                HttpGet httpGet = new HttpGet(urlPath + "?" + params);
-                CloseableHttpResponse response = httpClient.execute(httpGet);
-                HttpEntity entity = response.getEntity();
-                String content = EntityUtils.toString(entity, "utf-8");
-                logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>.Response is content= {}", content);
-                if(StringUtils.isNotBlank(content)) {
-                    if("2".equals(content)) {
-                        articleDetail.setCheckNo(-1);
-                    } else {
-                        articleDetail.setCheckNo(1);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (StringUtils.isNotBlank(articleContent)) {
-                if (articleContent.contains("套现")) {
-                    articleDetail.setCheckNo(-1);
-                } else {
-                    articleDetail.setCheckNo(1);
+//            String urlPath = "http://dmatrix-218.djtest.cn/admin/groupContent";
+//            //String urlPath = "http://127.0.0.1:8080/check";
+//            CloseableHttpClient httpClient = HttpClients.createDefault();
+//
+//            List<NameValuePair> nameValuePairList = new ArrayList<>();
+//            BasicNameValuePair basicNameValuePair1 = new BasicNameValuePair("articleContent", articleContent);
+//            nameValuePairList.add(basicNameValuePair1);
+//            try {
+//                UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairList, Consts.UTF_8);
+//                String params = EntityUtils.toString(encodedFormEntity);
+//                HttpGet httpGet = new HttpGet(urlPath + "?" + params);
+//                CloseableHttpResponse response = httpClient.execute(httpGet);
+//                HttpEntity entity = response.getEntity();
+//                String content = EntityUtils.toString(entity, "utf-8");
+//                logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>.Response is content= {}", content);
+//                if(StringUtils.isNotBlank(content)) {
+//                    if("2".equals(content)) {
+//                        articleDetail.setCheckNo(-1);
+//                    } else {
+//                        articleDetail.setCheckNo(1);
+//                    }
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } finally {
+//                try {
+//                    httpClient.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+            Set<String> set = new HashSet<>();
+            set.add("贩毒");
+            set.add("套现");
+            set.add("美立方");
+             articleDetail.setCheckNo(1);
+            for (String s : set) {
+                if (articleContent.contains(s)){
+                     articleDetail.setCheckNo(-1);
                 }
             }
             Integer integer = articleService.addArticleDetail(articleDetail);
