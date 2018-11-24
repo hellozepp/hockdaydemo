@@ -243,28 +243,46 @@ public class ArticleController {
         logger.info("Result 获取我的发布 文章列表值， resultDto={}", JSON.toJSONString(resultDto));
         return JSON.toJSONString(resultDto);
     }
+
+
+    /**
+     * 得到评论
+     **/
+    @GetMapping(value = "/get/comment")
+    public String getComment() {
+        List<ArticleDetail> allComment = articleService.getAllTicle();
+        List<ShowContent> va = new LinkedList<>();
+        PageList<ShowContent> pageList = new PageList<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+        for (ArticleDetail article : allComment) {
+            ShowContent content = new ShowContent();
+            content.setId(article.getId().intValue());
+            content.setContent(article.getArticleContent());
+            content.setLevel("二级");
+            content.setPublicTime(formatter.format(article.getCreateTime()));
+            content.setLike(article.getLikeNum());
+            content.setComments(article.getCommentNum());
+            content.setEmotional(RequestUtil.doPost(article.getArticleContent()));
+            va.add(content);
+        }
+        pageList.setList(va);
+        pageList.setAmount(100);
+        pageList.setPage(1);
+        pageList.setPageSize(10);
+        return JSON.toJSONString(pageList);
+    }
+
+
+    /**
+     * 更新状态
+     **/
+    @GetMapping(value = "/update/state")
+    public String update(Long articleId) {
+        System.out.println("xxxxxxxxxxxxxxxxxxxxxx");
+        articleService.updateState(articleId);
+        System.out.println(articleId);
+        return "xx";
+    }
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

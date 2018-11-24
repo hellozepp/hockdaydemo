@@ -4,6 +4,7 @@ import com.daojia.hockday.entity.ArticleDetail;
 import com.daojia.hockday.entity.ArticleOperate;
 import com.daojia.hockday.entity.ArticleSearchDto;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -39,6 +40,18 @@ public interface ArticleService {
      * @param articleId 文章ID
      */
     default ArticleDetail getArticleDetailById(Long articleId) {return new ArticleDetail();}
+
+    /**
+     * 获取多个文章
+     * @param
+     */
+    default List<ArticleDetail> getAllTicle() { return  new LinkedList<>();};
+
+    /**
+     * 更新文章状态
+     * @param articleId
+     */
+    default void updateState(Long articleId) { };
 
 
 

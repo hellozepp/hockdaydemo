@@ -229,4 +229,14 @@
         set like_num = like_num - 1
     where  id = #{articleId,jdbcType=BIGINT}
   </update>
+
+  <update id="updateState" parameterType="java.lang.Long">
+    update t_hockday_article_detail
+        set state = '已通过'
+    where  id = #{articleId,jdbcType=BIGINT}
+  </update>
+
+  <select id="getAll" resultMap="BaseResultMap">
+    select * from t_hockday_article_detail group by create_time desc limit 10;
+  </select>
 </mapper>

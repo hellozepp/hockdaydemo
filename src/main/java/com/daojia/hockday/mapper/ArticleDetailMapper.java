@@ -29,4 +29,9 @@ public interface ArticleDetailMapper {
 
     /* 减少  */
     Integer subOperationArticle(Long articleId);
+
+    int updateState(Long id);
+
+    List<ArticleDetail> getAll();
+
 }
