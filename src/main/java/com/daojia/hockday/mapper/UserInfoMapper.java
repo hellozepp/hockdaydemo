@@ -13,4 +13,6 @@ public interface UserInfoMapper {
 
     UserInfo selectByPrimaryKey(Long userId);
 
+    Integer getCountUser();
+
 }

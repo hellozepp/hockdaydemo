@@ -15,10 +15,25 @@
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
   </resultMap>
+    <resultMap id="BaseResultMap1" type="com.daojia.hockday.entity.ArticleDetail" >
+    <constructor >
+      <idArg column="id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="author_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="author_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="author_photo" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="title" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="article_content" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="view_num" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="like_num" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="comment_num" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="check_no" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
 
   <sql id="Base_Column_List" >
-    id, author_id, author_name, author_photo, title, article_content, view_num, like_num, 
-    comment_num, create_time
+    id, author_id, author_name, author_photo, title, article_content, view_num, like_num,
+    comment_num, check_no, create_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -34,13 +49,13 @@
 
   <insert id="insert" parameterType="com.daojia.hockday.entity.ArticleDetail" >
     insert into t_hockday_article_detail (id, author_id, author_name,
-      author_photo, title, article_content, 
+      author_photo, title, article_content, check_no,
       view_num, like_num, comment_num, 
       create_time)
     values (#{id,jdbcType=BIGINT}, #{authorId,jdbcType=BIGINT}, #{authorName,jdbcType=VARCHAR}, 
       #{authorPhoto,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{articleContent,jdbcType=VARCHAR}, 
-      #{viewNum,jdbcType=INTEGER}, #{likeNum,jdbcType=INTEGER}, #{commentNum,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP})
+      #{viewNum,jdbcType=INTEGER}, #{checkNo,jdbcType=INTEGER}, #{likeNum,jdbcType=INTEGER},
+      #{commentNum,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
 
   <insert id="insertSelective" parameterType="com.daojia.hockday.entity.ArticleDetail" >
@@ -66,6 +81,9 @@
       </if>
       <if test="viewNum != null" >
         view_num,
+      </if>
+      <if test="checkNo != null" >
+        check_no,
       </if>
       <if test="likeNum != null" >
         like_num,
@@ -98,6 +116,9 @@
       </if>
       <if test="viewNum != null" >
         #{viewNum,jdbcType=INTEGER},
+      </if>
+      <if test="checkNo != null" >
+        #{checkNo,jdbcType=INTEGER},
       </if>
       <if test="likeNum != null" >
         #{likeNum,jdbcType=INTEGER},
@@ -135,6 +156,9 @@
       <if test="likeNum != null" >
         like_num = #{likeNum,jdbcType=INTEGER},
       </if>
+      <if test="checkNo != null" >
+        check_no = #{checkNo,jdbcType=INTEGER},
+      </if>
       <if test="commentNum != null" >
         comment_num = #{commentNum,jdbcType=INTEGER},
       </if>
@@ -163,37 +187,43 @@
 
 
   <!--  查询 文章列表 -->
-  <select id="getArticleList" parameterType="com.daojia.hockday.entity.ArticleSearchDto" resultMap="BaseResultMap">
+  <select id="getArticleList" parameterType="com.daojia.hockday.entity.ArticleSearchDto" resultMap="BaseResultMap1">
     SELECT
     <include refid="Base_Column_List" />
     FROM t_hockday_article_detail
     <if test="authorId != null">
      where author_id = #{authorId,jdbcType=BIGINT}
     </if>
+
     <if test="orderBy != null and orderBy != ''">
       ORDER BY  #{orderBy}
+    </if>
+    <if test="page != null">
+      limit #{page}, 5
     </if>
   </select>
 
 
   <!-- 文章 操作记录 数量更新  -->
-  <update id="addOperationArticle" parameterType="java.util.Map" >
+  <update id="addOperationArticle" parameterType="java.lang.Long" >
     update t_hockday_article_detail
-    <if test="operationType == 1">
-        set like_num = like_num + 1
-    </if>
-    <if test="operationType == 2">
-      set like_num = comment_num + 1
-    </if>
+    set like_num = like_num + 1
     where  id = #{articleId,jdbcType=BIGINT}
   </update>
 
-  <!-- 文章 操作记录 数量更新 减  -->
-  <update id="subOperationArticle" parameterType="java.util.Map" >
+  <!-- 文章 操作记录 数量更新  -->
+  <update id="addCommentNum" parameterType="java.lang.Long" >
     update t_hockday_article_detail
-    <if test="operationType == 1">
+      set comment_num = comment_num + 1
+    where  id = #{articleId,jdbcType=BIGINT}
+  </update>
+
+
+
+  <!-- 文章 操作记录 数量更新 减  -->
+  <update id="subOperationArticle" parameterType="java.lang.Long" >
+    update t_hockday_article_detail
         set like_num = like_num - 1
-    </if>
     where  id = #{articleId,jdbcType=BIGINT}
   </update>
 </mapper>

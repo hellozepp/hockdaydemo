@@ -41,6 +41,23 @@ public class ArticleDetail implements Serializable {
 
     private String createTimeStr;
 
+    /* 校验 可见值 */
+    private Integer checkNo;
+
+    public ArticleDetail(Long id, Long authorId, String authorName, String authorPhoto, String title, String articleContent, Integer viewNum, Integer likeNum, Integer commentNum, Integer checkNo, Date createTime) {
+        this.id = id;
+        this.authorId = authorId;
+        this.authorName = authorName;
+        this.authorPhoto = authorPhoto;
+        this.title = title;
+        this.articleContent = articleContent;
+        this.viewNum = viewNum;
+        this.likeNum = likeNum;
+        this.commentNum = commentNum;
+        this.checkNo = checkNo;
+        this.createTime = createTime;
+    }
+
     public ArticleDetail(Long id, Long authorId, String authorName, String authorPhoto, String title, String articleContent, Integer viewNum, Integer likeNum, Integer commentNum, Date createTime) {
         this.id = id;
         this.authorId = authorId;
@@ -53,6 +70,20 @@ public class ArticleDetail implements Serializable {
         this.commentNum = commentNum;
         this.createTime = createTime;
     }
+
+   /* public ArticleDetail(Long id, Long authorId, String authorName, String authorPhoto, String title, String articleContent, Integer viewNum, Integer likeNum, Integer commentNum, Date createTime, Integer checkNo) {
+        this.id = id;
+        this.authorId = authorId;
+        this.authorName = authorName;
+        this.authorPhoto = authorPhoto;
+        this.title = title;
+        this.articleContent = articleContent;
+        this.viewNum = viewNum;
+        this.likeNum = likeNum;
+        this.commentNum = commentNum;
+        this.createTime = createTime;
+        this.checkNo = checkNo;
+    }*/
 
     public ArticleDetail() {
         super();
@@ -152,5 +183,13 @@ public class ArticleDetail implements Serializable {
 
     public void setCreateTimeStr(String createTimeStr) {
         this.createTimeStr = createTimeStr;
+    }
+
+    public Integer getCheckNo() {
+        return checkNo;
+    }
+
+    public void setCheckNo(Integer checkNo) {
+        this.checkNo = checkNo;
     }
 }

@@ -45,8 +45,11 @@ public class ArticleController {
      * @param type 列表类型 1:最热 2：最新
      */
     @GetMapping(value = "/get/article/list")
-    public String getArticleList(Integer type, Long userId) {
+    public String getArticleList(Integer type, Long userId, Integer pageNo) {
         logger.info("获取文章列表， type={}, userId={}", type, userId);
+        if (pageNo == null || pageNo < 1) {
+            pageNo = 0;
+        }
         ResultDto<List<ArticleDetail>> resultDto = new ResultDto<>();
         resultDto.setCode(ErrorEnum.SUCCESS.getCode());
         resultDto.setCodeMsg(ErrorEnum.SUCCESS.getDesc());
@@ -57,11 +60,12 @@ public class ArticleController {
         }
         /* 最热 */
         ArticleSearchDto articleSearchDto = new ArticleSearchDto();
-        if (type == 1) {
+        if (type == 2) {
             articleSearchDto.setOrderBy(" like_num desc");
-        } else if (type == 2) {  //最近
+        } else if (type == 1) {  //最近
             articleSearchDto.setOrderBy(" create_time desc");
         }
+        articleSearchDto.setPage(pageNo * 5);
         List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto, userId);
         resultDto.setData(articleDetailList);
         logger.info("Result 获取文章列表值， resultDto={}", JSON.toJSONString(resultDto));
@@ -87,6 +91,15 @@ public class ArticleController {
                 articleDetail.setAuthorPhoto(userByMd5Key.getPhotoUrl());
             }
             logger.info("添加文章内容， articleDetail{}", JSON.toJSONString(articleDetail));
+            //敏感感词校验
+            String articleContent = articleDetail.getArticleContent();
+            if (StringUtils.isNotBlank(articleContent)) {
+                if (articleContent.contains("套现")) {
+                    articleDetail.setCheckNo(-1);
+                } else {
+                    articleDetail.setCheckNo(1);
+                }
+            }
             Integer integer = articleService.addArticleDetail(articleDetail);
             resultDto.setData(integer);
         } else {
@@ -175,8 +188,6 @@ public class ArticleController {
         logger.info("Result 获取我的发布 文章列表值， resultDto={}", JSON.toJSONString(resultDto));
         return JSON.toJSONString(resultDto);
     }
-
-
 }
 
 

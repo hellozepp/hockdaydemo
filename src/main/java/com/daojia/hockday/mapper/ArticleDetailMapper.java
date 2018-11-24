@@ -23,8 +23,10 @@ public interface ArticleDetailMapper {
     List<ArticleDetail> getArticleList(ArticleSearchDto articleSearchDto);
 
     /* 添加对文章的操作 */
-    Integer addOperationArticle(Map<String, Object> parmMap);
+    Integer addOperationArticle(Long articleId);
+
+    Integer addCommentNum(Long articleId);
 
     /* 减少  */
-    Integer subOperationArticle(Map<String, Object> parmMap);
+    Integer subOperationArticle(Long articleId);
 }

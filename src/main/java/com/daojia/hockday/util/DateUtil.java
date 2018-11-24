@@ -701,25 +701,25 @@ public class DateUtil {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         String resultStr = "刚刚";
+
         if (date != null) {
             long time = date.getTime();
             long currentTime = System.currentTimeMillis();
-            if ((currentTime - time) / (1000 * 60 * 60 * 24) > 0) {
-                long day = (currentTime - time) / (1000 * 60 * 60 * 24);
-                if (day >= 7) {
-                    resultStr = simpleDateFormat.format(date);
-                } else {
-                    resultStr = String.valueOf(day + "天前");
-                }
-            } else if ((currentTime - time) / (1000 * 60 * 60) > 0) {
-                long hour = (currentTime - time) / (1000 * 60 * 60);
-                resultStr = String.valueOf(hour + "小时前");
-            } else if ((currentTime - time) / (1000 * 60) > 0) {
-                long min = (currentTime - time) / (1000 * 60 * 60);
 
+            long day = (currentTime - time) / (1000 * 60 * 60 * 24);
+            long hour = (currentTime - time) / (1000 * 60 * 60);
+            long min = (currentTime - time) / (1000 * 60);
+            long second = (currentTime - time) / (1000);
+
+            if (day >= 7) {
+                resultStr = simpleDateFormat.format(date);
+            } else if (day > 0) {
+                resultStr = String.valueOf(day + "天前");
+            } else if (hour > 0) {
+                resultStr = String.valueOf(hour + "小时前");
+            } else if (min > 0) {
                 resultStr = String.valueOf(min + "分前");
-            } else if ((currentTime - time) / (1000) > 0) {
-                long second = (currentTime - time) / (1000);
+            } else if (second > 0) {
                 resultStr = String.valueOf(second + "秒前");
             }
         }

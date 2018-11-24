@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,6 +25,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     public static final Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 
+    //特权用户列表
+    private List<Long> privilegeUserList = new ArrayList<>();
+    {
+        privilegeUserList.add(124L);
+    }
 
     @Resource
     private ArticleDetailMapper articleDetailMapper;
@@ -58,13 +62,30 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public List<ArticleDetail> getArticleDetailList(ArticleSearchDto articleSearchDto, Long userId) {
-        List<ArticleDetail> articleList = new ArrayList<>();
+        List<ArticleDetail> articleListTemp = new ArrayList<>();
         if (articleSearchDto == null) {
-            return articleList;
+            return articleListTemp;
         }
-        articleList = articleDetailMapper.getArticleList(articleSearchDto);
+        articleListTemp = articleDetailMapper.getArticleList(articleSearchDto);
+        List<ArticleDetail> articleList = new ArrayList<>();
+        //踢掉不可见
+        if(!CollectionUtils.isEmpty(articleListTemp)) {
+            for(ArticleDetail articleDetail : articleListTemp){
+                boolean canSeeIt = true;
+                //不可见文章
+                if(articleDetail.getCheckNo() != null && articleDetail.getCheckNo() == -1 ) {
+                    ///未登录用户 不可见 用户 不是发帖人 不可见
+                     if(userId == null || !userId.equals(articleDetail.getAuthorId())){
+                         canSeeIt = false;
+                     }
+                }
+                if(canSeeIt) {
+                    articleList.add(articleDetail);
+                }
+            }
+        }
 
-        //点赞状态 查询
+
         if (!CollectionUtils.isEmpty(articleList)) {
             articleList.forEach(articleDetail -> {
                 articleDetail.setIfLiked(2);
@@ -78,6 +99,7 @@ public class ArticleServiceImpl implements ArticleService {
                         paramMap.put("userId", userId);
                         paramMap.put("operationType", 1);
                         paramMap.put("articleIdList", articleIdCollect);
+                        //点赞状态 查询
                         List<ArticleOperate> operationByArticleList = articleOperateMapper.selectOperationByArticles(paramMap);
 
                         List<Long> readIdList = operationByArticleList.stream().map(ArticleOperate::getArticleId).collect(Collectors.toList());
@@ -114,13 +136,17 @@ public class ArticleServiceImpl implements ArticleService {
             paraMap.put("articleId", articleOperate.getArticleId());
             if (operateType != null && operateValue != null) {
                 int deleteResult = articleOperateMapper.deleteOperationByParamMap(paraMap);
-                if (operateValue == 1) {
-                    integer = articleDetailMapper.addOperationArticle(paraMap);
+                if (operateType == 1) {
+                    if (operateValue == 1) {
+                        integer = articleDetailMapper.addOperationArticle(articleOperate.getArticleId());
+                    } else if (operateValue == 2) {
+                        Integer integer1 = articleDetailMapper.subOperationArticle(articleOperate.getArticleId());
+                    }
                     articleOperate.setId(UniqueIDUtil.getUniqueID());
                     articleOperate.setOperateTime(new Date());
                     int insertResult = articleOperateMapper.insertSelective(articleOperate);
-                } else if (operateValue == 2) {
-                    integer = articleDetailMapper.subOperationArticle(paraMap);
+                } else if (operateType == 2) {
+                    integer = articleDetailMapper.addCommentNum(articleOperate.getArticleId());
                 }
             }
         }

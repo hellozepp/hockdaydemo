@@ -45,7 +45,7 @@ public class CommentController {
         articleOperate.setUserId(commentLink.getCriticismId());
         articleOperate.setOperateType(2);
         articleOperate.setOperateValue(1);
-        articleService.operationArticle(articleOperate);
+            Integer integer1 = articleService.operationArticle(articleOperate);
         }
         logger.info("Result 创建评论 commentLink={}", JSON.toJSONString(resultDto));
         return JSON.toJSONString(resultDto);

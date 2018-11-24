@@ -27,4 +27,5 @@ public interface CommentLinkMapper {
     int updateByPrimaryKey(CommentLink record);
 
     List<CommentLink> getAllComment(Long articleId);
+
 }

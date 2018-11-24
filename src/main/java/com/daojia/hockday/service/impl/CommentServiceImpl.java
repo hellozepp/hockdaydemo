@@ -3,6 +3,7 @@ package com.daojia.hockday.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.daojia.hockday.entity.CommentLink;
 import com.daojia.hockday.entity.UserInfo;
+import com.daojia.hockday.mapper.ArticleDetailMapper;
 import com.daojia.hockday.mapper.CommentLinkMapper;
 import com.daojia.hockday.mapper.UserInfoMapper;
 import com.daojia.hockday.service.CommentService;
@@ -14,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author lei shuiyu
@@ -32,6 +31,8 @@ public class CommentServiceImpl implements CommentService {
     @Resource
     private UserInfoMapper userInfoMapper;
 
+    @Resource
+    private ArticleDetailMapper articleDetailMapper;
     /**
      * 获取首层 用户评价
      *
@@ -73,6 +74,16 @@ public class CommentServiceImpl implements CommentService {
         if (commentLink == null) {
             return 0;
         }
+      /*  try {
+            Map<String, Object> parmMap = new HashMap<>();
+            parmMap.put("operationType", 2);
+            parmMap.put("articleId", commentLink.getArticleId());
+            Integer operationArticle = articleDetailMapper.addOperationArticle(parmMap);
+            logger.info("addOperationArticle", operationArticle);
+        } catch (Exception e) {
+            logger.error("操作失败", e);
+        }*/
+
         commentLink.setId(UniqueIDUtil.getUniqueID());
         commentLink.setCreateTime(new Date());
         return commentLinkMapper.insertSelective(commentLink);
