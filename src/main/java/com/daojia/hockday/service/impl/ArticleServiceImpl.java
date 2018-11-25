@@ -149,7 +149,7 @@ public class ArticleServiceImpl implements ArticleService {
                 if (operateType == 1) {
                     if (operateValue == 1) {
                         integer = articleDetailMapper.addOperationArticle(articleOperate.getArticleId());
-                    } else if (operateValue == 2) {
+                    } else if (operateValue == 2 && deleteResult == 1) {
                         Integer integer1 = articleDetailMapper.subOperationArticle(articleOperate.getArticleId());
                     }
                     articleOperate.setId(UniqueIDUtil.getUniqueID());

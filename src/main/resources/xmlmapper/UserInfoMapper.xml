@@ -73,7 +73,7 @@
   </select>
 
 
-  <select id="getCountUser" parameterType="java.lang.Integer">
+  <select id="getCountUser" resultType="java.lang.Integer">
     select
     count(*)
     from t_hockday_article_user_info

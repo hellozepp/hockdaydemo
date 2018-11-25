@@ -12,6 +12,16 @@ import com.daojia.hockday.util.RequestUtil;
 import com.daojia.hockday.util.ResultDto;
 import com.daojia.hockday.util.UniqueIDUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -22,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -101,37 +112,37 @@ public class ArticleController {
             articleDetail.setCreateTime(new Date());
 
 
-//            String urlPath = "http://dmatrix-218.djtest.cn/admin/groupContent";
-//            //String urlPath = "http://127.0.0.1:8080/check";
-//            CloseableHttpClient httpClient = HttpClients.createDefault();
-//
-//            List<NameValuePair> nameValuePairList = new ArrayList<>();
-//            BasicNameValuePair basicNameValuePair1 = new BasicNameValuePair("articleContent", articleContent);
-//            nameValuePairList.add(basicNameValuePair1);
-//            try {
-//                UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairList, Consts.UTF_8);
-//                String params = EntityUtils.toString(encodedFormEntity);
-//                HttpGet httpGet = new HttpGet(urlPath + "?" + params);
-//                CloseableHttpResponse response = httpClient.execute(httpGet);
-//                HttpEntity entity = response.getEntity();
-//                String content = EntityUtils.toString(entity, "utf-8");
-//                logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>.Response is content= {}", content);
-//                if(StringUtils.isNotBlank(content)) {
-//                    if("2".equals(content)) {
-//                        articleDetail.setCheckNo(-1);
-//                    } else {
-//                        articleDetail.setCheckNo(1);
-//                    }
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } finally {
-//                try {
-//                    httpClient.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            /*String urlPath = "http://dmatrix-218.djtest.cn/admin/groupContent";
+            //String urlPath = "http://127.0.0.1:8080/check";
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+
+            List<NameValuePair> nameValuePairList = new ArrayList<>();
+            BasicNameValuePair basicNameValuePair1 = new BasicNameValuePair("articleContent", articleContent);
+            nameValuePairList.add(basicNameValuePair1);
+            try {
+                UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairList, Consts.UTF_8);
+                String params = EntityUtils.toString(encodedFormEntity);
+                HttpGet httpGet = new HttpGet(urlPath + "?" + params);
+                CloseableHttpResponse response = httpClient.execute(httpGet);
+                HttpEntity entity = response.getEntity();
+                String content = EntityUtils.toString(entity, "utf-8");
+                logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>.Response is content= {}", content);
+                if(StringUtils.isNotBlank(content)) {
+                    if("2".equals(content)) {
+                        articleDetail.setCheckNo(-1);
+                    } else {
+                        articleDetail.setCheckNo(1);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }*/
             Set<String> set1 = new HashSet<>();
             set1.add("贩毒");
             set1.add("套现");
