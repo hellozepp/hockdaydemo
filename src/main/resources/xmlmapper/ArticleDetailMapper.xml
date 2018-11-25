@@ -243,6 +243,6 @@
   </update>
 
   <select id="getAll" resultMap="BaseResultMap">
-    select * from t_hockday_article_detail group by create_time desc limit 10;
+    select * from t_hockday_article_detail order by create_time desc limit 10;
   </select>
 </mapper>
