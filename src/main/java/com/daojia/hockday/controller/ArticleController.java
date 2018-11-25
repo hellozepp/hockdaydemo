@@ -71,7 +71,7 @@ public class ArticleController {
         Map<String, Object> resultMap = new HashMap<>();
         List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto, userId);
         resultMap.put("articleDetailList", articleDetailList);
-        articleSearchDto.setPage(pageNo + 1);
+        articleSearchDto.setPage((pageNo + 1) * pageSize);
         List<ArticleDetail> articleDetailListNext = articleService.getArticleDetailList(articleSearchDto, userId);
         if (!CollectionUtils.isEmpty(articleDetailListNext)) {
             resultMap.put("hasNext", 1);
