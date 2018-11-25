@@ -30,7 +30,7 @@ public class ArticleServiceImpl implements ArticleService {
     private List<Long> privilegeUserList = new ArrayList<>();
 
     {
-        privilegeUserList.add(124L);
+        privilegeUserList.add(663519351215872L);
     }
 
     @Resource

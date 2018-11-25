@@ -28,23 +28,23 @@ public class CommentController {
     private ArticleService articleService;
 
     /**
-     *  保存评论
+     * 保存评论
      **/
     @PostMapping(value = "/put/comment")
     public String saveComment(CommentLink commentLink) {
-            logger.info("To 创建评论 commentLink={}", JSON.toJSONString(commentLink));
+        logger.info("To 创建评论 commentLink={}", JSON.toJSONString(commentLink));
         ResultDto<Integer> resultDto = new ResultDto<>();
         resultDto.setParamError();
-        if(commentLink != null) {
+        if (commentLink != null) {
             Integer integer = commentService.saveComment(commentLink);
             resultDto.setSuccess();
             resultDto.setData(integer);
 
-        ArticleOperate articleOperate = new ArticleOperate();
-        articleOperate.setArticleId(commentLink.getArticleId());
-        articleOperate.setUserId(commentLink.getCriticismId());
-        articleOperate.setOperateType(2);
-        articleOperate.setOperateValue(1);
+            ArticleOperate articleOperate = new ArticleOperate();
+            articleOperate.setArticleId(commentLink.getArticleId());
+            articleOperate.setUserId(commentLink.getCriticismId());
+            articleOperate.setOperateType(2);
+            articleOperate.setOperateValue(1);
             Integer integer1 = articleService.operationArticle(articleOperate);
         }
         logger.info("Result 创建评论 commentLink={}", JSON.toJSONString(resultDto));
