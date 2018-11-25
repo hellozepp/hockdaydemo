@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.daojia.hockday.entity.UserInfo;
 import com.daojia.hockday.mapper.UserInfoMapper;
 import com.daojia.hockday.util.EncryptUtil;
+import com.daojia.hockday.util.MD5Util;
 import com.daojia.hockday.util.ResultDto;
 import com.daojia.hockday.util.UniqueIDUtil;
 import org.slf4j.Logger;
@@ -35,13 +36,13 @@ public class LoginController {
         if (StringUtils.isEmpty(token)) {
             return JSON.toJSONString(resultDto);
         }
-        String encrypt = EncryptUtil.encrypt(token);
+        String tokenNo = MD5Util.userToken(token);
 
-        UserInfo userInfo = userInfoMapper.getUserByMd5Key(encrypt);
+        UserInfo userInfo = userInfoMapper.getUserByMd5Key(tokenNo);
         if (userInfo == null) {
             userInfo = new UserInfo();
             userInfo.setId(UniqueIDUtil.getUniqueID());
-            userInfo.setMd5key(encrypt);
+            userInfo.setMd5key(tokenNo);
             userInfo.setUserName(UUID.randomUUID().toString());
             Random random = new Random(System.nanoTime());
             Integer countUser = 117;

@@ -7,21 +7,27 @@ import com.daojia.hockday.enums.ErrorEnum;
 import com.daojia.hockday.mapper.UserInfoMapper;
 import com.daojia.hockday.service.ArticleService;
 import com.daojia.hockday.service.CommentService;
-import com.daojia.hockday.util.EncryptUtil;
-import com.daojia.hockday.util.RequestUtil;
-import com.daojia.hockday.util.ResultDto;
-import com.daojia.hockday.util.UniqueIDUtil;
+import com.daojia.hockday.util.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -47,11 +53,12 @@ public class ArticleController {
     @GetMapping(value = "/get/article/list")
     public String getArticleList(Integer type, Long userId, Integer pageNo, Integer pageSize) {
         logger.info("获取文章列表， type={}, userId={}", type, userId);
+        logger.error("获取文章列表， type={}, userId={}", type, userId);
         if (pageNo == null || pageNo < 1) {
             pageNo = 0;
         }
         if (pageSize == null || pageSize < 1) {
-            pageSize = 5;
+            pageSize = 10;
         }
         ResultDto<List<ArticleDetail>> resultDto = new ResultDto<>();
         resultDto.setCode(ErrorEnum.SUCCESS.getCode());
@@ -87,7 +94,8 @@ public class ArticleController {
         ResultDto<Integer> resultDto = new ResultDto<>();
         resultDto.setSuccess();
         if (StringUtils.isNotBlank(token) && articleDetail != null) {
-            UserInfo userByMd5Key = userInfoMapper.getUserByMd5Key(EncryptUtil.encrypt(token));
+            String tokenNo = MD5Util.userToken(token);
+            UserInfo userByMd5Key = userInfoMapper.getUserByMd5Key(tokenNo);
             if (userByMd5Key != null) {
                 articleDetail.setId(UniqueIDUtil.getUniqueID());
                 articleDetail.setAuthorId(userByMd5Key.getId());
@@ -101,41 +109,40 @@ public class ArticleController {
             articleDetail.setCreateTime(new Date());
 
 
-//            String urlPath = "http://dmatrix-218.djtest.cn/admin/groupContent";
-//            //String urlPath = "http://127.0.0.1:8080/check";
-//            CloseableHttpClient httpClient = HttpClients.createDefault();
-//
-//            List<NameValuePair> nameValuePairList = new ArrayList<>();
-//            BasicNameValuePair basicNameValuePair1 = new BasicNameValuePair("articleContent", articleContent);
-//            nameValuePairList.add(basicNameValuePair1);
-//            try {
-//                UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairList, Consts.UTF_8);
-//                String params = EntityUtils.toString(encodedFormEntity);
-//                HttpGet httpGet = new HttpGet(urlPath + "?" + params);
-//                CloseableHttpResponse response = httpClient.execute(httpGet);
-//                HttpEntity entity = response.getEntity();
-//                String content = EntityUtils.toString(entity, "utf-8");
-//                logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>.Response is content= {}", content);
-//                if(StringUtils.isNotBlank(content)) {
-//                    if("2".equals(content)) {
-//                        articleDetail.setCheckNo(-1);
-//                    } else {
-//                        articleDetail.setCheckNo(1);
-//                    }
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } finally {
-//                try {
-//                    httpClient.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            /*String urlPath = "http://dmatrix-218.djtest.cn/admin/groupContent";
+            //String urlPath = "http://127.0.0.1:8080/check";
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+
+            List<NameValuePair> nameValuePairList = new ArrayList<>();
+            BasicNameValuePair basicNameValuePair1 = new BasicNameValuePair("articleContent", articleContent);
+            nameValuePairList.add(basicNameValuePair1);
+            try {
+                UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairList, Consts.UTF_8);
+                String params = EntityUtils.toString(encodedFormEntity);
+                HttpGet httpGet = new HttpGet(urlPath + "?" + params);
+                CloseableHttpResponse response = httpClient.execute(httpGet);
+                HttpEntity entity = response.getEntity();
+                String content = EntityUtils.toString(entity, "utf-8");
+                logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>.Response is content= {}", content);
+                if(StringUtils.isNotBlank(content)) {
+                    if("2".equals(content)) {
+                        articleDetail.setCheckNo(-1);
+                    } else {
+                        articleDetail.setCheckNo(1);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }*/
             Set<String> set1 = new HashSet<>();
             set1.add("贩毒");
             set1.add("套现");
-            articleDetail.setCheckNo(1);
             for (String s : set1) {
                 if (articleContent.contains(s)) {
                     articleDetail.setCheckNo(-1);
@@ -245,12 +252,14 @@ public class ArticleController {
     }
 
 
+
+
     /**
      * 得到评论
      **/
     @PostMapping(value = "/get/comment")
-    @ResponseBody
     public String getComment(HttpServletResponse response) {
+
         List<ArticleDetail> allComment = articleService.getAllTicle();
         List<ShowContent> va = new LinkedList<>();
         PageList<ShowContent> pageList = new PageList<>();
@@ -313,7 +322,7 @@ public class ArticleController {
     /**
      * 更新成功状态
      **/
-    @GetMapping(value = "/update/pass")
+    @PostMapping(value = "/update/pass")
     public String update(Long articleId) {
         articleService.updatePassState(articleId);
         System.out.println(articleId);
@@ -324,7 +333,7 @@ public class ArticleController {
     /**
      * 更新未通过状态
      **/
-    @GetMapping(value = "/update/nopass")
+    @PostMapping(value = "/update/nopass")
     public String updateNoPass(Long articleId) {
         articleService.updateNoPass(articleId);
         System.out.println(articleId);
