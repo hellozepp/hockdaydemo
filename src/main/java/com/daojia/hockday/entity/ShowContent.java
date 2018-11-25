@@ -6,7 +6,7 @@ package com.daojia.hockday.entity;
  */
 public class ShowContent {
 
-    private int id;
+    private Long id;
     private String level;
     private String state;
     private String content;
@@ -23,11 +23,11 @@ public class ShowContent {
         this.emotional = emotional;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
