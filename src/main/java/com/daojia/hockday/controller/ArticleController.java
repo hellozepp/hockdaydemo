@@ -1,6 +1,7 @@
 package com.daojia.hockday.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.daojia.hockday.entity.*;
 import com.daojia.hockday.enums.ErrorEnum;
 import com.daojia.hockday.mapper.UserInfoMapper;
@@ -16,9 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -238,8 +241,9 @@ public class ArticleController {
     /**
      * 得到评论
      **/
-    @GetMapping(value = "/get/comment")
-    public String getComment() {
+    @PostMapping(value = "/get/comment")
+    @ResponseBody
+    public String getComment(HttpServletResponse response) {
         List<ArticleDetail> allComment = articleService.getAllTicle();
         List<ShowContent> va = new LinkedList<>();
         PageList<ShowContent> pageList = new PageList<>();
@@ -248,7 +252,8 @@ public class ArticleController {
             ShowContent content = new ShowContent();
             content.setId(article.getId().intValue());
             content.setContent(article.getArticleContent());
-            content.setLevel("二级");
+            content.setLevel(state(article.getCheckNo().intValue()));
+            content.setState(conver(article.getCheckNo().intValue()));
             content.setPublicTime(formatter.format(article.getCreateTime()));
             content.setLike(article.getLikeNum());
             content.setComments(article.getCommentNum());
@@ -259,7 +264,34 @@ public class ArticleController {
         pageList.setAmount(100);
         pageList.setPage(1);
         pageList.setPageSize(10);
-        return JSON.toJSONString(pageList);
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        JSONObject object = new JSONObject();
+        object.put("code", 0);
+        object.put("msg", "success");
+        object.put("result", JSON.toJSONString(pageList));
+        return object.toString();
+    }
+
+
+    public String conver(int check) {
+        if (check == -1) {
+            return "不通过";
+        } else if (check == 1) {
+            return "待审核";
+        } else {
+            return "通过";
+        }
+    }
+
+
+    public String state(int check) {
+        if (check == -1) {
+            return "一级";
+        } else if (check == 1) {
+            return "二级";
+        } else {
+            return "三级";
+        }
     }
 
 
@@ -268,7 +300,6 @@ public class ArticleController {
      **/
     @GetMapping(value = "/update/pass")
     public String update(Long articleId) {
-
         articleService.updatePassState(articleId);
         System.out.println(articleId);
         return "xx";
