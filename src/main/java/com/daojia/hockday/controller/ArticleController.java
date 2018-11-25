@@ -259,12 +259,12 @@ public class ArticleController {
             ShowContent content = new ShowContent();
             content.setId(article.getId().intValue());
             content.setContent(article.getArticleContent());
-            content.setLevel(state(article.getCheckNo().intValue()));
-            content.setState(conver(article.getCheckNo().intValue()));
+            content.setLevel(state(article.getCheckNo()));
+            content.setState(conver(article.getCheckNo()));
             content.setPublicTime(formatter.format(article.getCreateTime()));
             content.setLike(article.getLikeNum());
             content.setComments(article.getCommentNum());
-            content.setEmotional(RequestUtil.doPost(article.getArticleContent()));
+           // content.setEmotional(RequestUtil.doPost(article.getArticleContent()));
             va.add(content);
         }
         pageList.setList(va);
@@ -280,25 +280,33 @@ public class ArticleController {
     }
 
 
-    public String conver(int check) {
-        if (check == -1) {
-            return "不通过";
-        } else if (check == 1) {
-            return "待审核";
-        } else {
-            return "通过";
+    public String conver(Integer check) {
+        if (check!=null){
+            if (check == -1) {
+                return "不通过";
+            } else if (check == 1) {
+                return "待审核";
+            } else {
+                return "通过";
+            }
         }
+        return "不通过";
     }
 
 
-    public String state(int check) {
-        if (check == -1) {
+    public String state(Integer check) {
+        if (check!=null){
+            if (check == -1) {
+                return "一级";
+            } else if (check == 1) {
+                return "二级";
+            } else {
+                return "三级";
+            }
+        }else {
             return "一级";
-        } else if (check == 1) {
-            return "二级";
-        } else {
-            return "三级";
         }
+
     }
 
 
