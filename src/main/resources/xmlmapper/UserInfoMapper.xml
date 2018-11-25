@@ -72,11 +72,8 @@
     where md5_key = #{md5Key,jdbcType=VARCHAR}
   </select>
 
-<<<<<<< HEAD
+
   <select id="getCountUser" parameterType="java.lang.Integer">
-=======
-  <select id="getCountUser" resultType="java.lang.Integer">
->>>>>>> origin/master
     select
     count(*)
     from t_hockday_article_user_info

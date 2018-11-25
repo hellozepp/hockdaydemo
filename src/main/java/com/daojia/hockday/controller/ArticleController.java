@@ -97,7 +97,8 @@ public class ArticleController {
             logger.info("添加文章内容， articleDetail{}", JSON.toJSONString(articleDetail));
             //敏感感词校验
             String articleContent = articleDetail.getArticleContent();
-            articleDetail.setCheckNo(1);
+            articleDetail.setCheckNo(2);
+            articleDetail.setCreateTime(new Date());
 
 
 //            String urlPath = "http://dmatrix-218.djtest.cn/admin/groupContent";
@@ -131,14 +132,20 @@ public class ArticleController {
 //                    e.printStackTrace();
 //                }
 //            }
-            Set<String> set = new HashSet<>();
-            set.add("贩毒");
-            set.add("套现");
-            set.add("美立方");
+            Set<String> set1 = new HashSet<>();
+            set1.add("贩毒");
+            set1.add("套现");
             articleDetail.setCheckNo(1);
-            for (String s : set) {
+            for (String s : set1) {
                 if (articleContent.contains(s)) {
                     articleDetail.setCheckNo(-1);
+                }
+            }
+            Set<String> set2 = new HashSet<>();
+            set2.add("美立方");
+            for (String s : set2) {
+                if (articleContent.contains(s)) {
+                    articleDetail.setCheckNo(1);
                 }
             }
             Integer integer = articleService.addArticleDetail(articleDetail);

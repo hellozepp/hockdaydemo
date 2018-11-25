@@ -726,6 +726,11 @@ public class DateUtil {
             } else if (second > 0) {
                 resultStr = String.valueOf(second + "秒前");
             }
+            logger.info("#####时间， resultStr={}", resultStr);
+        }
+        if (resultStr.equals("0分前")) {
+            logger.info(">###########################################3");
+            logger.info(">###########################################3");
         }
         return resultStr;
     }

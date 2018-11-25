@@ -75,10 +75,17 @@ public class ArticleServiceImpl implements ArticleService {
         if (!CollectionUtils.isEmpty(articleListTemp)) {
             for (ArticleDetail articleDetail : articleListTemp) {
                 boolean canSeeIt = true;
-                //不可见文章
+                // 不可见文章 只有用户自己可见
                 if (articleDetail.getCheckNo() != null && articleDetail.getCheckNo() == -1) {
                     ///未登录用户 不可见 用户 不是发帖人 不可见
                     if (userId == null || !userId.equals(articleDetail.getAuthorId())) {
+                        canSeeIt = false;
+                    }
+                }
+                // 待确定文章  特权和用户自己可见
+                if(articleDetail.getCheckNo() != null && articleDetail.getCheckNo() == 1){
+                    ///未登录用户 不可见 用户 不是发帖人 不可见
+                    if (userId == null || !userId.equals(articleDetail.getAuthorId()) || !privilegeUserList.contains(userId)) {
                         canSeeIt = false;
                     }
                 }
