@@ -232,7 +232,13 @@
 
   <update id="updateState" parameterType="java.lang.Long">
     update t_hockday_article_detail
-        set state = '已通过'
+        set check_no = 2
+    where  id = #{articleId,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateNoPass" parameterType="java.lang.Long">
+     update t_hockday_article_detail
+        set check_no = -1
     where  id = #{articleId,jdbcType=BIGINT}
   </update>
 

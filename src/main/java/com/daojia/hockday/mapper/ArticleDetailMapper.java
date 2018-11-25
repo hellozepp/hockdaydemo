@@ -34,4 +34,6 @@ public interface ArticleDetailMapper {
 
     List<ArticleDetail> getAll();
 
+    void updateNoPass(Long id);
+
 }

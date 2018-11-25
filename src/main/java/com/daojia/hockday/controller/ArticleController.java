@@ -31,10 +31,8 @@ public class ArticleController {
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
     @Resource
     private ArticleService articleService;
-
     @Resource
     private CommentService commentService;
-
     @Resource
     private UserInfoMapper userInfoMapper;
 
@@ -73,6 +71,7 @@ public class ArticleController {
         logger.info("Result 获取文章列表值， resultDto={}", JSON.toJSONString(resultDto));
         return JSON.toJSONString(resultDto);
     }
+
 
     /**
      * 添加发布
@@ -265,12 +264,23 @@ public class ArticleController {
 
 
     /**
-     * 更新状态
+     * 更新成功状态
      **/
-    @GetMapping(value = "/update/state")
+    @GetMapping(value = "/update/pass")
     public String update(Long articleId) {
-        System.out.println("xxxxxxxxxxxxxxxxxxxxxx");
-        articleService.updateState(articleId);
+
+        articleService.updatePassState(articleId);
+        System.out.println(articleId);
+        return "xx";
+    }
+
+
+    /**
+     * 更新未通过状态
+     **/
+    @GetMapping(value = "/update/nopass")
+    public String updateNoPass(Long articleId) {
+        articleService.updateNoPass(articleId);
         System.out.println(articleId);
         return "xx";
     }
