@@ -74,19 +74,26 @@ public class ArticleServiceImpl implements ArticleService {
         //踢掉不可见
         if (!CollectionUtils.isEmpty(articleListTemp)) {
             for (ArticleDetail articleDetail : articleListTemp) {
-                boolean canSeeIt = true;
+                Long articleDetailId = articleDetail.getId();
+                if(articleDetail.getCheckNo() != null && articleDetail.getCheckNo() == 2) {
+                    articleList.add(articleDetail);
+                    continue;
+                }
+                boolean canSeeIt = false;
                 // 不可见文章 只有用户自己可见
                 if (articleDetail.getCheckNo() != null && articleDetail.getCheckNo() == -1) {
                     ///未登录用户 不可见 用户 不是发帖人 不可见
-                    if (userId == null || !userId.equals(articleDetail.getAuthorId())) {
-                        canSeeIt = false;
+                    if (userId != null && userId.equals(articleDetail.getAuthorId())) {
+                        logger.info("不可见文章 用户是作者 因此可见， articleDetailId={}，userId={} getAuthorId={}", articleDetailId, userId, articleDetail.getAuthorId());
+                        canSeeIt = true;
                     }
                 }
                 // 待确定文章  特权和用户自己可见
                 if(articleDetail.getCheckNo() != null && articleDetail.getCheckNo() == 1){
                     ///未登录用户 不可见 用户 不是发帖人 不可见
-                    if (userId == null || !userId.equals(articleDetail.getAuthorId()) || !privilegeUserList.contains(userId)) {
-                        canSeeIt = false;
+                    if (userId != null && (userId.equals(articleDetail.getAuthorId()) || privilegeUserList.contains(userId))) {
+                        logger.info("待确定文章 用户是作者或是权限人 因此可见， articleDetailId={}，userId={} getAuthorId={}", articleDetailId, userId, articleDetail.getAuthorId());
+                        canSeeIt = true;
                     }
                 }
                 if (canSeeIt) {

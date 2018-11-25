@@ -41,9 +41,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentLink> getDebutCommentLink(Long articleId) {
+        logger.info("根据文章ID 获取评论信息， articleId={}", articleId);
         List<CommentLink> debutCommentLinkList = null;
         try {
             debutCommentLinkList = commentLinkMapper.getDebutCommentLink(articleId);
+            logger.info("获取到的顶层文章评论，debutCommentLinkList={} ", JSON.toJSONString(debutCommentLinkList));
             //为评论设置用户信息
             setUserInfoWithComment(debutCommentLinkList);
             getChildComment(debutCommentLinkList);
@@ -57,6 +59,7 @@ public class CommentServiceImpl implements CommentService {
 
     // 递归 获取子集评论 方法
     private void getChildComment(List<CommentLink> debutCommentLinkList) {
+        logger.info("获取子集评论内容");
         if (!CollectionUtils.isEmpty(debutCommentLinkList)) {
             debutCommentLinkList.forEach(debutComment -> {
                 List<CommentLink> childCommentLink = commentLinkMapper.getChildCommentLink(debutComment.getId());
@@ -116,6 +119,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     private void setUserInfoWithComment(List<CommentLink> commentLinkList) {
+        logger.info("评论详情列表 去添加用户信息，commentLinkList={} ", JSON.toJSONString(commentLinkList));
         if (!CollectionUtils.isEmpty(commentLinkList)) {
             try {
                 commentLinkList.forEach(commentLink -> {
@@ -124,10 +128,13 @@ public class CommentServiceImpl implements CommentService {
                     Long authorId = commentLink.getAuthorId();
                     UserInfo userInfo =
                             userInfoMapper.selectByPrimaryKey(criticismId);
+                    logger.info("获取到的评论用户信息为，criticismId={}， userInfo={}", criticismId, JSON.toJSONString(userInfo));
                     commentLink.setCriticismUserInfo(userInfo);
                     if (authorId != null && authorId != 0) {
                         UserInfo authorUserInfo =
                                 userInfoMapper.selectByPrimaryKey(authorId);
+                        logger.info("获取到的作者用户信息为，authorId={}， authorUserInfo={}", authorId, JSON.toJSONString(authorUserInfo));
+
                         commentLink.setAuthorUserInfo(authorUserInfo);
                     }
                 });
