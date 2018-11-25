@@ -22,11 +22,9 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -60,7 +58,7 @@ public class ArticleController {
             pageNo = 0;
         }
         if (pageSize == null || pageSize < 1) {
-            pageSize = 5;
+            pageSize = 10;
         }
         ResultDto<List<ArticleDetail>> resultDto = new ResultDto<>();
         resultDto.setCode(ErrorEnum.SUCCESS.getCode());
@@ -145,7 +143,6 @@ public class ArticleController {
             Set<String> set1 = new HashSet<>();
             set1.add("贩毒");
             set1.add("套现");
-            articleDetail.setCheckNo(1);
             for (String s : set1) {
                 if (articleContent.contains(s)) {
                     articleDetail.setCheckNo(-1);
@@ -325,7 +322,7 @@ public class ArticleController {
     /**
      * 更新成功状态
      **/
-    @GetMapping(value = "/update/pass")
+    @PostMapping(value = "/update/pass")
     public String update(Long articleId) {
         articleService.updatePassState(articleId);
         System.out.println(articleId);
@@ -336,7 +333,7 @@ public class ArticleController {
     /**
      * 更新未通过状态
      **/
-    @GetMapping(value = "/update/nopass")
+    @PostMapping(value = "/update/nopass")
     public String updateNoPass(Long articleId) {
         articleService.updateNoPass(articleId);
         System.out.println(articleId);
