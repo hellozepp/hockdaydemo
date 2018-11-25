@@ -62,7 +62,6 @@ public class RequestUtil {
 
 
     public static String getMailTopic(String content) {
-
         CloseableHttpClient httpclient = HttpClientBuilder.create().build();
         JSONObject re = new JSONObject();
         if (content == null) {

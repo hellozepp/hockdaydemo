@@ -252,8 +252,6 @@ public class ArticleController {
     }
 
 
-
-
     /**
      * 得到评论
      **/
@@ -266,14 +264,14 @@ public class ArticleController {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
         for (ArticleDetail article : allComment) {
             ShowContent content = new ShowContent();
-            content.setId(article.getId().intValue());
+            content.setId(article.getId());
             content.setContent(article.getArticleContent());
             content.setLevel(state(article.getCheckNo()));
             content.setState(conver(article.getCheckNo()));
             content.setPublicTime(formatter.format(article.getCreateTime()));
             content.setLike(article.getLikeNum());
             content.setComments(article.getCommentNum());
-            content.setEmotional(RequestUtil.getsentiment(article.getArticleContent()));
+            content.setEmotional("#" + RequestUtil.getsentiment(article.getArticleContent()));
             va.add(content);
         }
         pageList.setList(va);
@@ -298,8 +296,9 @@ public class ArticleController {
             } else {
                 return "通过";
             }
+        }else {
+            return "不通过";
         }
-        return "不通过";
     }
 
 
@@ -326,7 +325,11 @@ public class ArticleController {
     public String update(Long articleId) {
         articleService.updatePassState(articleId);
         System.out.println(articleId);
-        return "xx";
+        JSONObject object = new JSONObject();
+        object.put("code", 0);
+        object.put("msg", "success");
+        object.put("result", "");
+        return object.toString();
     }
 
 
@@ -336,8 +339,11 @@ public class ArticleController {
     @PostMapping(value = "/update/nopass")
     public String updateNoPass(Long articleId) {
         articleService.updateNoPass(articleId);
-        System.out.println(articleId);
-        return "xx";
+        JSONObject object = new JSONObject();
+        object.put("code", 0);
+        object.put("msg", "success");
+        object.put("result", "");
+        return object.toString();
     }
 
 
