@@ -21,8 +21,11 @@ public class RequestUtil {
 
         CloseableHttpClient httpclient = HttpClientBuilder.create().build();
         JSONObject re = new JSONObject();
+        if (content == null) {
+            return "中性";
+        }
         re.put("text", content);
-        String url="https://aip.baidubce.com/rpc/2.0/nlp/v1/sentiment_classify?charset=UTF-8&access_token=24.e6a72dcd0a254d946e74977b11ae604b.2592000.1544673097.282335-14782508";
+        String url = "https://aip.baidubce.com/rpc/2.0/nlp/v1/sentiment_classify?charset=UTF-8&access_token=24.e6a72dcd0a254d946e74977b11ae604b.2592000.1544673097.282335-14782508";
         HttpPost post = new HttpPost(url);
         JSONObject response = null;
         try {
@@ -50,14 +53,14 @@ public class RequestUtil {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println(e);
         }
         return "中性";
     }
 
 
     public static void main(String[] args) {
-      //  System.out.println(doPost("https://aip.baidubce.com/rpc/2.0/nlp/v1/sentiment_classify?charset=UTF-8&access_token=24.e6a72dcd0a254d946e74977b11ae604b.2592000.1544673097.282335-14782508", "高兴"));
+        //  System.out.println(doPost("https://aip.baidubce.com/rpc/2.0/nlp/v1/sentiment_classify?charset=UTF-8&access_token=24.e6a72dcd0a254d946e74977b11ae604b.2592000.1544673097.282335-14782508", "高兴"));
     }
 
 

@@ -173,7 +173,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    public void updateState(Long id) {
+    public void updatePassState(Long id) {
         articleDetailMapper.updateState(id);
     }
 
@@ -181,6 +181,11 @@ public class ArticleServiceImpl implements ArticleService {
     public List<ArticleDetail> getAllTicle() {
         List<ArticleDetail> list = articleDetailMapper.getAll();
         return list;
+    }
+
+    @Override
+    public void updateNoPass(Long id){
+        articleDetailMapper.updateNoPass(id);
     }
 
 

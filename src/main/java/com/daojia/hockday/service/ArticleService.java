@@ -51,7 +51,13 @@ public interface ArticleService {
      * 更新文章状态
      * @param articleId
      */
-    default void updateState(Long articleId) { };
+    default void updatePassState(Long articleId) { };
+
+    /**
+     *更新状态为不通过
+     * @param articelId
+     */
+    default void updateNoPass(Long articelId) {};
 
 
 
