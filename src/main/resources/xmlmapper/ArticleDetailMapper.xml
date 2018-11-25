@@ -242,7 +242,7 @@
     where  id = #{articleId,jdbcType=BIGINT}
   </update>
 
-  <select id="getAll" resultMap="BaseResultMap">
+  <select id="getAll" resultMap="BaseResultMap1">
     select
     <include refid="Base_Column_List" />
      from t_hockday_article_detail order by create_time desc limit 10;
