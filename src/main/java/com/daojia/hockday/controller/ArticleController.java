@@ -7,27 +7,20 @@ import com.daojia.hockday.enums.ErrorEnum;
 import com.daojia.hockday.mapper.UserInfoMapper;
 import com.daojia.hockday.service.ArticleService;
 import com.daojia.hockday.service.CommentService;
-import com.daojia.hockday.util.*;
+import com.daojia.hockday.util.MD5Util;
+import com.daojia.hockday.util.RequestUtil;
+import com.daojia.hockday.util.ResultDto;
+import com.daojia.hockday.util.UniqueIDUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -53,14 +46,13 @@ public class ArticleController {
     @GetMapping(value = "/get/article/list")
     public String getArticleList(Integer type, Long userId, Integer pageNo, Integer pageSize) {
         logger.info("获取文章列表， type={}, userId={}", type, userId);
-        logger.error("获取文章列表， type={}, userId={}", type, userId);
         if (pageNo == null || pageNo < 1) {
             pageNo = 0;
         }
         if (pageSize == null || pageSize < 1) {
             pageSize = 10;
         }
-        ResultDto<List<ArticleDetail>> resultDto = new ResultDto<>();
+        ResultDto<Map<String, Object>> resultDto = new ResultDto<>();
         resultDto.setCode(ErrorEnum.SUCCESS.getCode());
         resultDto.setCodeMsg(ErrorEnum.SUCCESS.getDesc());
         if (type == null) {
@@ -76,8 +68,18 @@ public class ArticleController {
         articleSearchDto.setPage(pageNo * pageSize);
         articleSearchDto.setPageSize(pageSize);
 
+        Map<String, Object> resultMap = new HashMap<>();
         List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto, userId);
-        resultDto.setData(articleDetailList);
+        resultMap.put("articleDetailList", articleDetailList);
+        articleSearchDto.setPage(pageNo + 1);
+        List<ArticleDetail> articleDetailListNext = articleService.getArticleDetailList(articleSearchDto, userId);
+        if (!CollectionUtils.isEmpty(articleDetailListNext)) {
+            resultMap.put("hasNext", 1);
+        } else {
+            resultMap.put("hasNext", 2);
+        }
+
+        resultDto.setData(resultMap);
         logger.info("Result 获取文章列表值， resultDto={}", JSON.toJSONString(resultDto));
         return JSON.toJSONString(resultDto);
     }
@@ -288,7 +290,7 @@ public class ArticleController {
 
 
     public String conver(Integer check) {
-        if (check!=null){
+        if (check != null) {
             if (check == -1) {
                 return "不通过";
             } else if (check == 1) {
@@ -296,14 +298,14 @@ public class ArticleController {
             } else {
                 return "通过";
             }
-        }else {
+        } else {
             return "不通过";
         }
     }
 
 
     public String state(Integer check) {
-        if (check!=null){
+        if (check != null) {
             if (check == -1) {
                 return "一级";
             } else if (check == 1) {
@@ -311,7 +313,7 @@ public class ArticleController {
             } else {
                 return "三级";
             }
-        }else {
+        } else {
             return "一级";
         }
 
