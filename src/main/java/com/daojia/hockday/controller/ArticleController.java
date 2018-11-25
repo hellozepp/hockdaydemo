@@ -7,10 +7,7 @@ import com.daojia.hockday.enums.ErrorEnum;
 import com.daojia.hockday.mapper.UserInfoMapper;
 import com.daojia.hockday.service.ArticleService;
 import com.daojia.hockday.service.CommentService;
-import com.daojia.hockday.util.EncryptUtil;
-import com.daojia.hockday.util.RequestUtil;
-import com.daojia.hockday.util.ResultDto;
-import com.daojia.hockday.util.UniqueIDUtil;
+import com.daojia.hockday.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
@@ -58,6 +55,7 @@ public class ArticleController {
     @GetMapping(value = "/get/article/list")
     public String getArticleList(Integer type, Long userId, Integer pageNo, Integer pageSize) {
         logger.info("获取文章列表， type={}, userId={}", type, userId);
+        logger.error("获取文章列表， type={}, userId={}", type, userId);
         if (pageNo == null || pageNo < 1) {
             pageNo = 0;
         }
@@ -98,7 +96,8 @@ public class ArticleController {
         ResultDto<Integer> resultDto = new ResultDto<>();
         resultDto.setSuccess();
         if (StringUtils.isNotBlank(token) && articleDetail != null) {
-            UserInfo userByMd5Key = userInfoMapper.getUserByMd5Key(EncryptUtil.encrypt(token));
+            String tokenNo = MD5Util.userToken(token);
+            UserInfo userByMd5Key = userInfoMapper.getUserByMd5Key(tokenNo);
             if (userByMd5Key != null) {
                 articleDetail.setId(UniqueIDUtil.getUniqueID());
                 articleDetail.setAuthorId(userByMd5Key.getId());
@@ -256,12 +255,14 @@ public class ArticleController {
     }
 
 
+
+
     /**
      * 得到评论
      **/
     @PostMapping(value = "/get/comment")
-    @ResponseBody
     public String getComment(HttpServletResponse response) {
+
         List<ArticleDetail> allComment = articleService.getAllTicle();
         List<ShowContent> va = new LinkedList<>();
         PageList<ShowContent> pageList = new PageList<>();
