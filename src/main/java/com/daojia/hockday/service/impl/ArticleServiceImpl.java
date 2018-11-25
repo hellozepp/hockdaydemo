@@ -28,6 +28,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     //特权用户列表
     private List<Long> privilegeUserList = new ArrayList<>();
+
     {
         privilegeUserList.add(124L);
     }
@@ -71,17 +72,17 @@ public class ArticleServiceImpl implements ArticleService {
         articleListTemp = articleDetailMapper.getArticleList(articleSearchDto);
         List<ArticleDetail> articleList = new ArrayList<>();
         //踢掉不可见
-        if(!CollectionUtils.isEmpty(articleListTemp)) {
-            for(ArticleDetail articleDetail : articleListTemp){
+        if (!CollectionUtils.isEmpty(articleListTemp)) {
+            for (ArticleDetail articleDetail : articleListTemp) {
                 boolean canSeeIt = true;
                 //不可见文章
-                if(articleDetail.getCheckNo() != null && articleDetail.getCheckNo() == -1 ) {
+                if (articleDetail.getCheckNo() != null && articleDetail.getCheckNo() == -1) {
                     ///未登录用户 不可见 用户 不是发帖人 不可见
-                     if(userId == null || !userId.equals(articleDetail.getAuthorId())){
-                         canSeeIt = false;
-                     }
+                    if (userId == null || !userId.equals(articleDetail.getAuthorId())) {
+                        canSeeIt = false;
+                    }
                 }
-                if(canSeeIt) {
+                if (canSeeIt) {
                     articleList.add(articleDetail);
                 }
             }
@@ -169,5 +170,18 @@ public class ArticleServiceImpl implements ArticleService {
 
         return articleDetail;
     }
+
+
+    @Override
+    public void updateState(Long id) {
+        articleDetailMapper.updateState(id);
+    }
+
+    @Override
+    public List<ArticleDetail> getAllTicle() {
+        List<ArticleDetail> list = articleDetailMapper.getAll();
+        return list;
+    }
+
 
 }
