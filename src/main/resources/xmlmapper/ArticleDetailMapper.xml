@@ -199,7 +199,7 @@
     </if>
 
     <if test="orderBy != null and orderBy != ''">
-      ORDER BY  #{orderBy}
+      ORDER BY  ${orderBy}
     </if>
     <if test="page != null and pageSize != null ">
       limit #{page}, #{pageSize}
