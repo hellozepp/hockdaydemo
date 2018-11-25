@@ -1,7 +1,6 @@
 package com.daojia.hockday.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.daojia.hockday.entity.*;
 import com.daojia.hockday.enums.ErrorEnum;
 import com.daojia.hockday.mapper.UserInfoMapper;
@@ -12,27 +11,14 @@ import com.daojia.hockday.util.RequestUtil;
 import com.daojia.hockday.util.ResultDto;
 import com.daojia.hockday.util.UniqueIDUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -45,44 +31,48 @@ public class ArticleController {
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
     @Resource
     private ArticleService articleService;
+
     @Resource
     private CommentService commentService;
+
     @Resource
     private UserInfoMapper userInfoMapper;
 
     /**
      * 获取 发布的列表
      *
-     * @param type 列表类型 1:最热 2：最新
+     * @param type 列表类型 1:最新 2：最热
      */
     @GetMapping(value = "/get/article/list")
-    public String getArticleList(Integer type, Long userId, Integer pageNo) {
+    public String getArticleList(Integer type, Long userId, Integer pageNo, Integer pageSize) {
         logger.info("获取文章列表， type={}, userId={}", type, userId);
         if (pageNo == null || pageNo < 1) {
             pageNo = 0;
+        }
+        if (pageSize == null || pageSize < 1) {
+            pageSize = 5;
         }
         ResultDto<List<ArticleDetail>> resultDto = new ResultDto<>();
         resultDto.setCode(ErrorEnum.SUCCESS.getCode());
         resultDto.setCodeMsg(ErrorEnum.SUCCESS.getDesc());
         if (type == null) {
-            resultDto.setCode(ErrorEnum.ERROR_PARAM.getCode());
-            resultDto.setCodeMsg(ErrorEnum.ERROR_PARAM.getDesc());
-            return JSON.toJSONString(resultDto);
+            type = 1;
         }
-        /* 最热 */
+
         ArticleSearchDto articleSearchDto = new ArticleSearchDto();
-        if (type == 2) {
-            articleSearchDto.setOrderBy(" like_num desc");
-        } else if (type == 1) {  //最近
+        if (type.equals(1)) {  //最新
             articleSearchDto.setOrderBy(" create_time desc");
+        } else if (type.equals(2)) { /* 最热 */
+            articleSearchDto.setOrderBy(" like_num desc");
         }
-        articleSearchDto.setPage(pageNo * 5);
+        articleSearchDto.setPage(pageNo * pageSize);
+        articleSearchDto.setPageSize(pageSize);
+
         List<ArticleDetail> articleDetailList = articleService.getArticleDetailList(articleSearchDto, userId);
         resultDto.setData(articleDetailList);
         logger.info("Result 获取文章列表值， resultDto={}", JSON.toJSONString(resultDto));
         return JSON.toJSONString(resultDto);
     }
-
 
     /**
      * 添加发布
@@ -108,42 +98,45 @@ public class ArticleController {
             articleDetail.setCheckNo(1);
 
 
-            String urlPath = "http://dmatrix-218.djtest.cn/api/dmatrix/comment/issensitive";
-            //String urlPath = "http://127.0.0.1:8080/check";
-            CloseableHttpClient httpClient = HttpClients.createDefault();
-
-            List<NameValuePair> nameValuePairList = new ArrayList<>();
-            BasicNameValuePair basicNameValuePair1 = new BasicNameValuePair("articleContent", articleContent);
-            nameValuePairList.add(basicNameValuePair1);
-            try {
-                UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairList, Consts.UTF_8);
-                String params = EntityUtils.toString(encodedFormEntity);
-                HttpGet httpGet = new HttpGet(urlPath + "?" + params);
-                CloseableHttpResponse response = httpClient.execute(httpGet);
-                HttpEntity entity = response.getEntity();
-                String content = EntityUtils.toString(entity, "utf-8");
-                logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>.Response is content= {}", content);
-                if (StringUtils.isNotBlank(content)) {
-                    if ("2".equals(content)) {
-                        articleDetail.setCheckNo(-1);
-                    } else {
-                        articleDetail.setCheckNo(1);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (StringUtils.isNotBlank(articleContent)) {
-                if (articleContent.contains("套现")) {
+//            String urlPath = "http://dmatrix-218.djtest.cn/admin/groupContent";
+//            //String urlPath = "http://127.0.0.1:8080/check";
+//            CloseableHttpClient httpClient = HttpClients.createDefault();
+//
+//            List<NameValuePair> nameValuePairList = new ArrayList<>();
+//            BasicNameValuePair basicNameValuePair1 = new BasicNameValuePair("articleContent", articleContent);
+//            nameValuePairList.add(basicNameValuePair1);
+//            try {
+//                UrlEncodedFormEntity encodedFormEntity = new UrlEncodedFormEntity(nameValuePairList, Consts.UTF_8);
+//                String params = EntityUtils.toString(encodedFormEntity);
+//                HttpGet httpGet = new HttpGet(urlPath + "?" + params);
+//                CloseableHttpResponse response = httpClient.execute(httpGet);
+//                HttpEntity entity = response.getEntity();
+//                String content = EntityUtils.toString(entity, "utf-8");
+//                logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>.Response is content= {}", content);
+//                if(StringUtils.isNotBlank(content)) {
+//                    if("2".equals(content)) {
+//                        articleDetail.setCheckNo(-1);
+//                    } else {
+//                        articleDetail.setCheckNo(1);
+//                    }
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } finally {
+//                try {
+//                    httpClient.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+            Set<String> set = new HashSet<>();
+            set.add("贩毒");
+            set.add("套现");
+            set.add("美立方");
+            articleDetail.setCheckNo(1);
+            for (String s : set) {
+                if (articleContent.contains(s)) {
                     articleDetail.setCheckNo(-1);
-                } else {
-                    articleDetail.setCheckNo(1);
                 }
             }
             Integer integer = articleService.addArticleDetail(articleDetail);
@@ -178,7 +171,7 @@ public class ArticleController {
         articleOperate.setUserId(userId);
         articleOperate.setOperateValue(operationValue);
         articleOperate.setOperateTime(new Date());
-
+// TODO: 2018/11/25 张琳
         Integer integer = articleService.operationArticle(articleOperate);
         resultDto.setSuccess();
         resultDto.setData(integer);
@@ -246,9 +239,8 @@ public class ArticleController {
     /**
      * 得到评论
      **/
-    @PostMapping(value = "/get/comment")
-    @ResponseBody
-    public String getComment(HttpServletResponse response) {
+    @GetMapping(value = "/get/comment")
+    public String getComment() {
         List<ArticleDetail> allComment = articleService.getAllTicle();
         List<ShowContent> va = new LinkedList<>();
         PageList<ShowContent> pageList = new PageList<>();
@@ -268,12 +260,7 @@ public class ArticleController {
         pageList.setAmount(100);
         pageList.setPage(1);
         pageList.setPageSize(10);
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        JSONObject object = new JSONObject();
-        object.put("code",0);
-        object.put("msg","success");
-        object.put("result",JSON.toJSONString(pageList));
-        return object.toString();
+        return JSON.toJSONString(pageList);
     }
 
 
