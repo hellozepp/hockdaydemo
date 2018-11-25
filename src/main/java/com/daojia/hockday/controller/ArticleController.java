@@ -296,8 +296,9 @@ public class ArticleController {
             } else {
                 return "通过";
             }
+        }else {
+            return "不通过";
         }
-        return "不通过";
     }
 
 
