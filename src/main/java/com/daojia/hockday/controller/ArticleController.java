@@ -264,7 +264,7 @@ public class ArticleController {
             content.setPublicTime(formatter.format(article.getCreateTime()));
             content.setLike(article.getLikeNum());
             content.setComments(article.getCommentNum());
-           // content.setEmotional(RequestUtil.doPost(article.getArticleContent()));
+            content.setEmotional(RequestUtil.getsentiment(article.getArticleContent()));
             va.add(content);
         }
         pageList.setList(va);
