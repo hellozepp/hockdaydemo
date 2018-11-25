@@ -1,6 +1,7 @@
 package com.daojia.hockday.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.daojia.hockday.entity.*;
 import com.daojia.hockday.enums.ErrorEnum;
 import com.daojia.hockday.mapper.UserInfoMapper;
@@ -30,12 +31,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.BufferedReader;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -249,8 +246,9 @@ public class ArticleController {
     /**
      * 得到评论
      **/
-    @GetMapping(value = "/get/comment")
-    public String getComment() {
+    @PostMapping(value = "/get/comment")
+    @ResponseBody
+    public String getComment(HttpServletResponse response) {
         List<ArticleDetail> allComment = articleService.getAllTicle();
         List<ShowContent> va = new LinkedList<>();
         PageList<ShowContent> pageList = new PageList<>();
@@ -270,7 +268,12 @@ public class ArticleController {
         pageList.setAmount(100);
         pageList.setPage(1);
         pageList.setPageSize(10);
-        return JSON.toJSONString(pageList);
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        JSONObject object = new JSONObject();
+        object.put("code",0);
+        object.put("msg","success");
+        object.put("result",JSON.toJSONString(pageList));
+        return object.toString();
     }
 
 
