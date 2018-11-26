@@ -14,6 +14,7 @@ public class MyInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         httpServletResponse.addHeader("Content-Type", "application/x-www-form-urlencoded");
         httpServletRequest.setAttribute("content-type", "application/x-www-form-urlencoded");
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
         return true;
     }
 
