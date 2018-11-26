@@ -324,13 +324,14 @@ public class ArticleController {
      * 更新成功状态
      **/
     @PostMapping(value = "/update/pass")
-    public String update(Long articleId) {
+    public String update(Long articleId,HttpServletResponse response) {
         articleService.updatePassState(articleId);
         System.out.println(articleId);
         JSONObject object = new JSONObject();
         object.put("code", 0);
         object.put("msg", "success");
         object.put("result", "");
+        response.setHeader("Access-Control-Allow-Origin", "*");
         return object.toString();
     }
 
